@@ -22,7 +22,7 @@ First, you need to configure your selection model. We typically use `Selection` 
 can change the name), and should be generated such as:
 
 ```ruby
-rails generate model Selection ...
+rails generate model Selection name parent_id:integer system_code position_value:integer is_default:boolean is_system:boolean archived_at:datetime
 ```
 
 And next, edit this class to look like:

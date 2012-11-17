@@ -98,14 +98,14 @@ module Selections
         children.flat_map(&:children)
       end
 
-  end
+    end
 
     def selectable
       include ModelMixin
     end
 
     ActiveSupport.on_load :active_record do
-      include Selections::Selectable
+      extend Selections::Selectable
     end
 
   end
