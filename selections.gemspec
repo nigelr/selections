@@ -11,7 +11,6 @@ Gem::Specification.new do |gem|
   gem.description   = %q{Selections provides a minimal set of tools for database-backed lists of select options.}
   gem.summary       = %q{Database backed select options... of doom!}
   gem.homepage      = ""
-
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
@@ -19,6 +18,7 @@ Gem::Specification.new do |gem|
 
   gem.add_dependency 'activerecord', '~> 3.0'
   gem.add_dependency 'actionpack',   '~> 3.0'
+  gem.add_dependency 'acts_as_tree', '~> 1.2.0'
 
   gem.add_development_dependency 'rake'
   gem.add_development_dependency 'rspec'

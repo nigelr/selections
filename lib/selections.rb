@@ -1,9 +1,13 @@
 require 'selections/version'
-
 require 'active_record'
 require 'action_view'
 
 module Selections
+
+  require 'selections/belongs_to_selection'
+  require 'selections/form_builder_extensions'
+  require 'selections/railtie'
+  require 'selections/selectable'
 
   # Given a block, will set how we find / detect the current model
   # used for selections, without a block, will return the value.
