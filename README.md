@@ -18,7 +18,14 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+## Configuration
+
+If you use a class name other than `Selection` as your selection model, you must
+tell selections so by adding the following to a new file, `config/initializers/selections.rb`:
+
+```ruby
+Selections.model { YourSelectionModel }
+```
 
 ## Contributing
 
