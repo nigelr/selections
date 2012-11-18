@@ -5,7 +5,7 @@ module Selections
     end
 
     class SelectionTag
-      attr_reader :object, :field, :html_options, :options, :selection, :builder
+      attr_reader :object, :field, :html_options, :options, :selection, :builder, :field_id
 
       def initialize(builder, object, field, html_options, options)
         @builder = builder
@@ -15,6 +15,7 @@ module Selections
         @options = options || {}
         @system_code_name = options[:system_code] || field
         @selection = Selections.model
+        @field_id ||= (field.to_s + "_id").to_sym
       end
 
       def system_code
@@ -25,7 +26,6 @@ module Selections
       def to_tag
         if system_code
           items = system_code.children
-          field_id = (field.to_s + "_id").to_sym
           if object.new_record? && object.send(field_id).nil?
             default = items.find_by_is_default(true)
             object.send("#{field_id}=", default.id) if default && !default.archived
