@@ -1,10 +1,5 @@
 require "spec_helper"
 
-class Selection < ActiveRecord::Base
-  selectable
-end
-
-
 describe Selections do
   let(:parent) { Selection.create(name: "priority") }
   let(:selection_1) { Selection.create(name: "low", parent_id: parent.id) }
@@ -32,7 +27,6 @@ describe Selections do
         expect(parent.children.filter_archived_except_selected(nil)).to match_array([selection_1])
       end
       it "returns only unarchived items when archived is not selected" do
-        p Selection.all.map &:name
         expect(parent.children.filter_archived_except_selected(selection_1.id)).to match_array([selection_1])
       end
       it "returns archived item if selected" do
