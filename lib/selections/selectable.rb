@@ -94,7 +94,7 @@ module Selections
         end
       end
 
-      def leaves
+      def sub_children
         children.flat_map(&:children)
       end
 
