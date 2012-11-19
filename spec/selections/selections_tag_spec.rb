@@ -62,6 +62,31 @@ describe SelectionTag do
     it("when override system_code") { expect(SelectionTag.new(nil, nil, :hello, {}, {system_code: :priority}).system_code_name).to eq(:priority) }
   end
 
+  context "include blank" do
+    context "new form" do
+      it "and include_blank not set" do
+        expect(SelectionTag.new(form, Ticket.new, :priority, {}, {}).options[:include_blank]).to be_true
+      end
+      it "and include_blank is set to false" do
+        expect(SelectionTag.new(form, Ticket.new, :priority, {}, {include_blank: false}).options[:include_blank]).to be_false
+      end
+      it "and include_blank is set to true" do
+        expect(SelectionTag.new(form, Ticket.new, :priority, {}, {include_blank: true}).options[:include_blank]).to be_true
+      end
+    end
+    context "edit form" do
+      it "and include_blank not set" do
+        expect(SelectionTag.new(form, ticket, :priority, {}, {}).options[:include_blank]).to be_false
+      end
+      it "and include_blank is set to true" do
+        expect(SelectionTag.new(form, ticket, :priority, {}, {include_blank: true}).options[:include_blank]).to be_true
+      end
+      it "and include_blank is set to false" do
+        expect(SelectionTag.new(form, ticket, :priority, {}, {include_blank: false}).options[:include_blank]).to be_false
+      end
+    end
+  end
+
   describe ".to_tag" do
 
     #TODO need to create a form action with a related table so new_record? will work

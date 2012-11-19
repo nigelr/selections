@@ -12,10 +12,12 @@ module Selections
         @object = object
         @field = field
         @html_options = html_options || {}
-        @options = options || {}
+
         @system_code_name = options[:system_code] || field
         @selection = Selections.model
         @field_id ||= (field.to_s + "_id").to_sym
+        @options = options || {}
+        @options[:include_blank] = true if object.try(:new_record?) && options[:include_blank].nil?
       end
 
       def system_code
@@ -30,12 +32,10 @@ module Selections
 
       def to_tag
         if system_code
-          #items = system_code.children
           #if object.new_record? && object.send(field_id).nil?
           #  default = items.find_by_is_default(true)
           #  object.send("#{field_id}=", default.id) if default && !default.archived
           #end
-          options[:include_blank] = true if object.send(field_id).blank? && options[:include_blank].nil?
           #TODO add default style
           #html_options[:style] ||=
           form.select field_id, items.map { |item| [item.name, item.id] }, options, html_options
