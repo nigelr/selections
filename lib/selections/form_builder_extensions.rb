@@ -5,10 +5,10 @@ module Selections
     end
 
     class SelectionTag
-      attr_reader :object, :field, :html_options, :options, :selection, :builder, :field_id
+      attr_reader :form, :object, :field, :html_options, :options, :selection, :field_id
 
-      def initialize(builder, object, field, html_options, options)
-        @builder = builder
+      def initialize(form, object, field, html_options, options)
+        @form = form
         @object = object
         @field = field
         @html_options = html_options || {}
@@ -19,8 +19,9 @@ module Selections
       end
 
       def system_code
+        #TODO convert to using where
         @system_code ||= selection.find_by_system_code(@system_code_name.to_s)
-        @system_code ||= selection.find_by_system_code(object.object_name.to_s + "_" + @system_code_name.to_s)
+        @system_code ||= selection.find_by_system_code(form.object_name.to_s + "_" + @system_code_name.to_s)
       end
 
       def to_tag
@@ -33,7 +34,7 @@ module Selections
           options[:include_blank] = true if object.send(field_id).blank? && options[:include_blank].nil?
           #TODO add default style
           #html_options[:style] ||=
-          builder.select field_id, items.filter_archived_except_selected(object.send(field_id)).map { |item| [item.name, item.id] }, options, html_options
+          form.select field_id, items.filter_archived_except_selected(object.send(field_id)).map { |item| [item.name, item.id] }, options, html_options
         else
           "Invalid system_code of '#{system_code_name}'"
         end

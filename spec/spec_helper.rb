@@ -1,5 +1,4 @@
 require 'selections'
-
 ActiveRecord::Base.establish_connection adapter: "sqlite3", database: ":memory:"
 ActiveRecord::Migration.create_table :selections do |t|
   t.string :name
@@ -12,8 +11,19 @@ ActiveRecord::Migration.create_table :selections do |t|
 end
 ActiveRecord::Base.send(:include, ActsAsTree)
 
+ActiveRecord::Migration.create_table :tickets do |t|
+  t.string :name
+  t.integer :parent_id
+  t.integer :priority_id
+  t.timestamps
+end
+
 class Selection < ActiveRecord::Base
   selectable
+end
+
+class Ticket < ActiveRecord::Base
+
 end
 
 RSpec.configure do |config|
