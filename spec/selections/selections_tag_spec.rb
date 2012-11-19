@@ -4,7 +4,7 @@ require "spec_helper"
 include Selections::FormBuilderExtensions
 describe SelectionTag do
   let(:parent) { Selection.create(name: "priority") }
-  let(:model_parent) { Selection.create(name: "post_other") }
+  let(:model_parent) { Selection.create(name: "ticket_priority") }
   let(:selection_1) { Selection.create(name: "low", parent_id: parent.id) }
   let(:selection_2) { Selection.create(name: "medium", parent_id: parent.id) }
   let(:selection_3) { Selection.create(name: "high", parent_id: parent.id) }
@@ -25,7 +25,7 @@ describe SelectionTag do
 
     it "finds with form model prefixed" do
       model_parent
-      expect(SelectionTag.new(form, ticket, :other, {}, {}).system_code).to eq(model_parent)
+      expect(SelectionTag.new(form, ticket, :priority, {}, {}).system_code).to eq(model_parent)
     end
   end
 
