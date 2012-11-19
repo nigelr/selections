@@ -10,6 +10,12 @@ describe SelectionTag do
   let(:selection_3) { Selection.create(name: "high", parent_id: parent.id) }
   let(:form) { ActionView::Helpers::FormBuilder.new(:ticket, ticket, ActionView::Base.new, {}, Proc.new {}) }
   let(:ticket) { Ticket.create(:name=>"railscamp") }
+  let(:all_selections) do
+    parent
+    selection_1
+    selection_2
+    selection_3
+  end
 
 
   describe ".system_code" do
@@ -38,7 +44,7 @@ describe SelectionTag do
     end
 
     it "returns all children items" do
-      expect(SelectionTag.new(form, ticket, :priority, {}, {}).items).to eq(parent.children)
+      expect(SelectionTag.new(form, ticket, :priority, {}, {}).items.all).to eq(parent.children)
     end
     context "archived" do
       before { selection_2.update_attribute(:archived, true) }
@@ -47,7 +53,7 @@ describe SelectionTag do
       end
       it "returns archived items when selected" do
         ticket.update_attribute(:priority_id, selection_2.id)
-        expect(SelectionTag.new(form, ticket, :priority, {}, {}).items).to eq(parent.children )
+        expect(SelectionTag.new(form, ticket, :priority, {}, {}).items.all).to eq(parent.children )
       end
     end
   end
@@ -83,6 +89,26 @@ describe SelectionTag do
       end
       it "and include_blank is set to false" do
         expect(SelectionTag.new(form, ticket, :priority, {}, {include_blank: false}).options[:include_blank]).to be_false
+      end
+    end
+  end
+
+  context ".default" do
+    before { all_selections }
+    it "returns nil when no default set" do
+      expect(SelectionTag.new(form, Ticket.new, :priority, {}, {include_blank: false}).default_item).to be_blank
+    end
+    context "when a default is set" do
+      before { selection_2.update_attribute(:is_default, true) }
+      it "should set when new form" do
+        expect(SelectionTag.new(form, Ticket.new, :priority, {}, {include_blank: false}).default_item).to eq(selection_2.id.to_s)
+      end
+      it "should not set when editing form" do
+        expect(SelectionTag.new(form, ticket, :priority, {}, {include_blank: false}).default_item).to be_blank
+      end
+      it "should be set selected item when editing form" do
+        ticket.update_attribute(:priority_id, selection_3.id)
+        expect(SelectionTag.new(form, ticket, :priority, {}, {include_blank: false}).default_item).to eq(selection_3.id.to_s)
       end
     end
   end

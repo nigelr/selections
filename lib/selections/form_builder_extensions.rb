@@ -27,7 +27,7 @@ module Selections
       end
 
       def items
-        system_code.children.filter_archived_except_selected(object.send(field_id)).all
+        @items ||= system_code.children.filter_archived_except_selected(object.send(field_id))
       end
 
       def to_tag
@@ -44,6 +44,14 @@ module Selections
         end
       end
 
+      def default_item
+        if object.new_record?
+          #TODO convert to where
+          items.find_by_is_default(true).try(:id).to_s
+        else
+          object.send(field_id).to_s
+        end
+      end
     end
 
     ActiveSupport.on_load :action_view do
