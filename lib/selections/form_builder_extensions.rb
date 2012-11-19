@@ -21,9 +21,8 @@ module Selections
       end
 
       def system_code
-        #TODO convert to using where
-        @system_code ||= selection.find_by_system_code(system_code_name.to_s)
-        @system_code ||= selection.find_by_system_code(form.object_name.to_s + "_" + system_code_name.to_s)
+        @system_code ||= selection.where(system_code: system_code_name.to_s).first
+        @system_code ||= selection.where(system_code: "#{form.object_name}_#{system_code_name}").first
       end
 
       def items
@@ -46,8 +45,7 @@ module Selections
 
       def default_item
         if object.new_record?
-          #TODO convert to where
-          items.find_by_is_default(true).try(:id).to_s
+          items.where(:is_default => true).first.try(:id).to_s
         else
           object.send(field_id).to_s
         end
