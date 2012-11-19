@@ -5,7 +5,7 @@ module Selections
     end
 
     class SelectionTag
-      attr_reader :form, :object, :field, :html_options, :options, :selection, :field_id
+      attr_reader :form, :object, :field, :html_options, :options, :selection, :field_id, :system_code_name
 
       def initialize(form, object, field, html_options, options)
         @form = form
@@ -20,21 +20,25 @@ module Selections
 
       def system_code
         #TODO convert to using where
-        @system_code ||= selection.find_by_system_code(@system_code_name.to_s)
-        @system_code ||= selection.find_by_system_code(form.object_name.to_s + "_" + @system_code_name.to_s)
+        @system_code ||= selection.find_by_system_code(system_code_name.to_s)
+        @system_code ||= selection.find_by_system_code(form.object_name.to_s + "_" + system_code_name.to_s)
+      end
+
+      def items
+        system_code.children.filter_archived_except_selected(object.send(field_id)).all
       end
 
       def to_tag
         if system_code
-          items = system_code.children
-          if object.new_record? && object.send(field_id).nil?
-            default = items.find_by_is_default(true)
-            object.send("#{field_id}=", default.id) if default && !default.archived
-          end
+          #items = system_code.children
+          #if object.new_record? && object.send(field_id).nil?
+          #  default = items.find_by_is_default(true)
+          #  object.send("#{field_id}=", default.id) if default && !default.archived
+          #end
           options[:include_blank] = true if object.send(field_id).blank? && options[:include_blank].nil?
           #TODO add default style
           #html_options[:style] ||=
-          form.select field_id, items.filter_archived_except_selected(object.send(field_id)).map { |item| [item.name, item.id] }, options, html_options
+          form.select field_id, items.map { |item| [item.name, item.id] }, options, html_options
         else
           "Invalid system_code of '#{system_code_name}'"
         end

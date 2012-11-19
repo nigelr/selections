@@ -29,9 +29,37 @@ describe SelectionTag do
     end
   end
 
+  describe ".items" do
+    before do
+      parent
+      selection_1
+      selection_2
+      selection_3
+    end
+
+    it "returns all children items" do
+      expect(SelectionTag.new(form, ticket, :priority, {}, {}).items).to eq(parent.children)
+    end
+    context "archived" do
+      before { selection_2.update_attribute(:archived, true) }
+      it "returns only non archived items" do
+        expect(SelectionTag.new(form, ticket, :priority, {}, {}).items).to eq(parent.children - [selection_2])
+      end
+      it "returns archived items when selected" do
+        ticket.update_attribute(:priority_id, selection_2.id)
+        expect(SelectionTag.new(form, ticket, :priority, {}, {}).items).to eq(parent.children )
+      end
+    end
+  end
+
   describe ".field_id" do
     it("when string") { expect(SelectionTag.new(nil, nil, "priority", {}, {}).field_id).to eq(:priority_id) }
     it("when symbol") { expect(SelectionTag.new(nil, nil, :priority, {}, {}).field_id).to eq(:priority_id) }
+  end
+
+  describe ".system_code_name" do
+    it("sets to field name") { expect(SelectionTag.new(nil, nil, :priority, {}, {}).system_code_name).to eq(:priority) }
+    it("when override system_code") { expect(SelectionTag.new(nil, nil, :hello, {}, {system_code: :priority}).system_code_name).to eq(:priority) }
   end
 
   describe ".to_tag" do
