@@ -1,4 +1,6 @@
 require 'selections'
+require "nokogiri"
+
 ActiveRecord::Base.establish_connection adapter: "sqlite3", database: ":memory:"
 ActiveRecord::Migration.create_table :selections do |t|
   t.string :name

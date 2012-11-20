@@ -17,7 +17,14 @@ module Selections
         @selection = Selections.model
         @field_id ||= (field.to_s + "_id").to_sym
         @options = options || {}
-        @options[:include_blank] = true if object.try(:new_record?) && options[:include_blank].nil?
+      end
+
+      def include_blank?
+        if options[:include_blank].nil?
+          !!((object.try(:new_record?) || !object.send(field_id))) && default_item.blank?
+        else
+          !!options[:include_blank]
+        end
       end
 
       def system_code
@@ -31,24 +38,25 @@ module Selections
 
       def to_tag
         if system_code
-          #if object.new_record? && object.send(field_id).nil?
-          #  default = items.find_by_is_default(true)
-          #  object.send("#{field_id}=", default.id) if default && !default.archived
-          #end
           #TODO add default style
           #html_options[:style] ||=
+          options[:include_blank] = include_blank?
           form.select field_id, items.map { |item| [item.name, item.id] }, options, html_options
         else
           "Invalid system_code of '#{system_code_name}'"
         end
       end
 
-      def default_item
+      def selected_item
         if object.new_record?
-          items.where(:is_default => true).first.try(:id).to_s
+          default_item
         else
           object.send(field_id).to_s
         end
+      end
+
+      def default_item
+        items.where(:is_default => true).first.try(:id).to_s
       end
     end
 

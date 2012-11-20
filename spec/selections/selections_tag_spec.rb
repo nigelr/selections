@@ -36,12 +36,7 @@ describe SelectionTag do
   end
 
   describe ".items" do
-    before do
-      parent
-      selection_1
-      selection_2
-      selection_3
-    end
+    before { all_selections }
 
     it "returns all children items" do
       expect(SelectionTag.new(form, ticket, :priority, {}, {}).items.all).to eq(parent.children)
@@ -69,59 +64,143 @@ describe SelectionTag do
   end
 
   context "include blank" do
-    context "new form" do
-      it "and include_blank not set" do
-        expect(SelectionTag.new(form, Ticket.new, :priority, {}, {}).options[:include_blank]).to be_true
+    before { all_selections }
+
+    context "when not set" do
+      context "new form" do
+        it("has blank") { expect(SelectionTag.new(form, Ticket.new, :priority, {}, {}).include_blank?).to be_true }
+        it "has no blank when default set" do
+          selection_1.update_attribute(:is_default, true)
+          expect(SelectionTag.new(form, Ticket.new, :priority, {}, {}).include_blank?).to be_false
+        end
       end
-      it "and include_blank is set to false" do
-        expect(SelectionTag.new(form, Ticket.new, :priority, {}, {include_blank: false}).options[:include_blank]).to be_false
-      end
-      it "and include_blank is set to true" do
-        expect(SelectionTag.new(form, Ticket.new, :priority, {}, {include_blank: true}).options[:include_blank]).to be_true
+      context "edit form" do
+        it("has no blank when ticket.priority_id is set") do
+          ticket.update_attribute(:priority_id, selection_3.id)
+          expect(SelectionTag.new(form, ticket, :priority, {}, {}).include_blank?).to be_false
+        end
+        it("has blank when ticket.priority_id is nil") { expect(SelectionTag.new(form, ticket, :priority, {}, {}).include_blank?).to be_true }
+        it "has no blank when ticket.priority_id is nil and default set" do
+          selection_1.update_attribute(:is_default, true)
+          expect(SelectionTag.new(form, ticket, :priority, {}, {}).include_blank?).to be_false
+        end
       end
     end
-    context "edit form" do
-      it "and include_blank not set" do
-        expect(SelectionTag.new(form, ticket, :priority, {}, {}).options[:include_blank]).to be_false
+
+    context "when set false" do
+      context "new form" do
+        it("has no blank") { expect(SelectionTag.new(form, Ticket.new, :priority, {}, {include_blank: false}).include_blank?).to be_false }
+        it "has no blank when default set" do
+          selection_1.update_attribute(:is_default, true)
+          expect(SelectionTag.new(form, Ticket.new, :priority, {}, {include_blank: false}).include_blank?).to be_false
+        end
       end
-      it "and include_blank is set to true" do
-        expect(SelectionTag.new(form, ticket, :priority, {}, {include_blank: true}).options[:include_blank]).to be_true
+      context "edit form" do
+        it("has no blank when ticket.priority_id is set") do
+          ticket.update_attribute(:priority_id, selection_3.id)
+          expect(SelectionTag.new(form, ticket, :priority, {}, {include_blank: false}).include_blank?).to be_false
+        end
+        it("has no blank even when ticket.priority_id is nil") { expect(SelectionTag.new(form, ticket, :priority, {}, {include_blank: false}).include_blank?).to be_false }
+        it "has no blank when ticket.priority_id is nil and default set" do
+          selection_1.update_attribute(:is_default, true)
+          expect(SelectionTag.new(form, ticket, :priority, {}, {include_blank: false}).include_blank?).to be_false
+        end
       end
-      it "and include_blank is set to false" do
-        expect(SelectionTag.new(form, ticket, :priority, {}, {include_blank: false}).options[:include_blank]).to be_false
+    end
+
+    context "when set to true" do
+      context "new form" do
+        it("has blank") { expect(SelectionTag.new(form, Ticket.new, :priority, {}, {include_blank: true}).include_blank?).to be_true }
+        it "has blank even when default set" do
+          selection_1.update_attribute(:is_default, true)
+          expect(SelectionTag.new(form, Ticket.new, :priority, {}, {include_blank: true}).include_blank?).to be_true
+        end
+      end
+      context "edit form" do
+        it("has blank even when ticket.priority_id is set") do
+          ticket.update_attribute(:priority_id, selection_3.id)
+          expect(SelectionTag.new(form, ticket, :priority, {}, {include_blank: true}).include_blank?).to be_true
+        end
+        it("has blank even when ticket.priority_id is nil") { expect(SelectionTag.new(form, ticket, :priority, {}, {include_blank: true}).include_blank?).to be_true }
+        it "has blank even when ticket.priority_id is nil and default set" do
+          selection_1.update_attribute(:is_default, true)
+          expect(SelectionTag.new(form, ticket, :priority, {}, {include_blank: true}).include_blank?).to be_true
+        end
       end
     end
   end
 
-  context ".default" do
+  context ".default_item" do
     before { all_selections }
     it "returns nil when no default set" do
       expect(SelectionTag.new(form, Ticket.new, :priority, {}, {include_blank: false}).default_item).to be_blank
     end
-    context "when a default is set" do
-      before { selection_2.update_attribute(:is_default, true) }
-      it "should set when new form" do
-        expect(SelectionTag.new(form, Ticket.new, :priority, {}, {include_blank: false}).default_item).to eq(selection_2.id.to_s)
-      end
-      it "should not set when editing form" do
-        expect(SelectionTag.new(form, ticket, :priority, {}, {include_blank: false}).default_item).to be_blank
-      end
-      it "should be set selected item when editing form" do
-        ticket.update_attribute(:priority_id, selection_3.id)
-        expect(SelectionTag.new(form, ticket, :priority, {}, {include_blank: false}).default_item).to eq(selection_3.id.to_s)
-      end
+    it "should set to default item" do
+      selection_2.update_attribute(:is_default, true)
+      expect(SelectionTag.new(form, Ticket.new, :priority, {}, {include_blank: false}).default_item).to eq(selection_2.id.to_s)
     end
   end
 
-  describe ".to_tag" do
+  context ".selected_item" do
+    before { all_selections }
 
-    #TODO need to create a form action with a related table so new_record? will work
-    it "new_record?" do
-      parent
-      selection_1
-      selection_2
-      selection_3
-      puts SelectionTag.new(form, ticket, :priority, {}, {}).to_tag
+    context "when default not set" do
+      it("when new form") { expect(SelectionTag.new(form, Ticket.new, :priority, {}, {}).selected_item).to eq("") }
+      it "when edit form with ticket.priority_id set" do
+        ticket.update_attribute(:priority_id, selection_3.id)
+        expect(SelectionTag.new(form, ticket, :priority, {}, {}).selected_item).to eq(selection_3.id.to_s)
+      end
+      it("when edit form with no ticket.priority_id set") { expect(SelectionTag.new(form, ticket, :priority, {}, {}).selected_item).to eq("") }
+    end
+    context "when default is set" do
+      before { selection_2.update_attribute(:is_default, true) }
+      it("when new form") { expect(SelectionTag.new(form, Ticket.new, :priority, {}, {}).selected_item).to eq(selection_2.id.to_s) }
+      it "when edit form with ticket.priority_id set" do
+        ticket.update_attribute(:priority_id, selection_3.id)
+        expect(SelectionTag.new(form, ticket, :priority, {}, {}).selected_item).to eq(selection_3.id.to_s)
+      end
+      it("when edit form with no ticket.priority_id set") { expect(SelectionTag.new(form, ticket, :priority, {}, {}).selected_item).to eq("") }
+    end
+  end
+
+
+
+
+
+  #describe ".options_html" do
+  #  it "should return none" do
+  #    #expect(SelectionTag.new(form, ticket, :priority, {}, {}))
+  #    selection_1
+  #    p SelectionTag.new(form, ticket, :priority, {}, {}).options_html
+  #  end
+  #end
+  describe ".to_tag" do
+    it "displays warning when system_code does not exist" do
+      expect(SelectionTag.new(form, ticket, :priority, {}, {}).to_tag).to eq("Invalid system_code of 'priority'")
+    end
+    context "valid system_code" do
+      before do
+        all_selections
+      end
+      context "no default" do
+        it "has non selected when new form" do
+          expect(Nokogiri::HTML(SelectionTag.new(form, Ticket.new, :priority, {}, {}).to_tag).search("option[selected]")).to be_empty
+        end
+        it "has non selected when relation is nil" do
+          expect(Nokogiri::HTML(SelectionTag.new(form, ticket, :priority, {}, {}).to_tag).search("option[selected]")).to be_empty
+        end
+        it "has selected when relation is nil" do
+          ticket.update_attribute(:priority_id, selection_3.id)
+          expect(Nokogiri::HTML(SelectionTag.new(form, ticket, :priority, {}, {}).to_tag).search("option[selected]").first.content).to eq(selection_3.name)
+        end
+      end
+      it "nigel" do
+        ticket.update_attribute(:priority_id, selection_3.id)
+        p Nokogiri::HTML(SelectionTag.new(form, ticket, :priority, {}, {}).to_tag).
+              search("option[selected]").first.content
+        #expect(Nokogiri::HTML(SelectionTag.new(form, ticket, :priority, {}, {selected: selection_2.id.to_s}).to_tag).
+        #           search("option[selected]").first.content).to
+      end
     end
   end
 end
