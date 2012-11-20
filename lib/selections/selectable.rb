@@ -86,11 +86,11 @@ module Selections
         !!archived_at
       end
 
-      def archived=(archived_set)
-        if archived_set.blank?
-          self.archived_at = nil
-        else
+      def archived=(archived_checkbox)
+        if archived_checkbox == "1"
           self.archived_at = Time.now unless archived_at
+        else
+          self.archived_at = nil
         end
       end
 

@@ -174,7 +174,7 @@ describe Selections do
     before do
       @stubbed_time = Time.parse("01/01/2010 10:00")
       Time.stub(:now).and_return(@stubbed_time)
-      selection_1.update_attributes(archived: true)
+      selection_1.update_attributes(archived: "1")
     end
 
     it "should set archived" do
@@ -182,11 +182,11 @@ describe Selections do
     end
     it "remain archived and not change date when set again" do
       Time.stub(:now).and_return(Time.parse("12/12/2012 10:00"))
-      selection_1.update_attributes(archived: true)
+      selection_1.update_attributes(archived: "1")
       expect(selection_1.archived_at).to eq @stubbed_time
     end
     it "un-archives item" do
-      selection_1.update_attributes(archived: false)
+      selection_1.update_attributes(archived: "0")
       expect(selection_1.archived_at).to be_nil
     end
   end
