@@ -140,14 +140,14 @@ will be no blank row and the default item will be selected
 
 When editing a form, by default the blank row will not be displayed
 
-# Archived Item
+#### Archived Item
 
 On a new form items that are archived in Selections will not appear in the selection list. When editing an existing record the list will only
 contain un-archived items, unless the item selected is archived it will then appear.
-eg. A ticket has a priority set to high, later the high selection list item was archived, when we edit the ticket record again the item
-will show in the list even though it is archived
 
-# Order
+eg. A ticket has a priority set to high, later the high selection list item was archived, when we edit the ticket record again the item will show in the list even though it is archived
+
+#### Order
 
 The list will by default display in alphanumeric order, unless you add position values and then it will display in the values.
 
