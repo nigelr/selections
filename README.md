@@ -23,7 +23,7 @@ can change the name), and should be generated such as:
 rails generate model Selection name parent_id:integer system_code position_value:integer is_default:boolean is_system:boolean archived_at:datetime
 ```
 
-# Model
+### Model
 And next, edit this class to look like:
 
 ```ruby
@@ -56,7 +56,7 @@ dynamic lookups support pluralization and will thenreturn the children
 Selection.priorities => [high,med,low] records
 ```
 
-# Form Helper
+#### Form Helper
 
 if we had a controller for Ticket model with fields of
 - name
@@ -120,9 +120,8 @@ eg: show.html.erb
   ticket.priority # will default to return name
 ```
 
-## Automatic Features
-
-# Include Blank
+### Automatic Features
+#### Include Blank
 
 In a new form the selections list will have blank top row unless a default item is set in the selections eg. Medium Prirority, then there
 will be no blank row and the default item will be selected
@@ -157,6 +156,7 @@ Selections.model { YourSelectionModel }
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
 
+## YAML example
 
 ```yaml
 priority:
