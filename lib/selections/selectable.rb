@@ -6,7 +6,7 @@ module Selections
     module ModelMixin
       extend ActiveSupport::Concern
 
-      HIDDEN_POSITION = 999888777
+      HIDDEN_POSITION = 999888777 #:nodoc:
 
       included do
         # Setup any required model information for a selectable model.
@@ -28,6 +28,19 @@ module Selections
       end
 
       module ClassMethods
+        # Dynamic Lookups
+        #
+        # Assuming there is a list with the following system_codes
+        #
+        # example of a nested list of system codes:
+        # * priority
+        # * - high
+        # * - medium
+        # * - low
+        #
+        # Selection.priority => return priority instance
+        #
+        # Selection.priorities => returns [high, medium, low] instances (children)
 
         def method_missing lookup_code, *options
           if (scope = where(:system_code => lookup_code.to_s)).exists?
@@ -41,31 +54,33 @@ module Selections
 
       end
 
-      def to_s
+      def to_s #:nodoc:
         name.to_s
       end
 
+      # Returns boolean true if current node has no children
       def leaf?
         children.where(parent_id: self.id).empty?
       end
 
+      # Returns childrens children from root or any point
       def level_2
         Selection.where(parent_id: child_ids)
       end
 
-      def position=(value)
+      def position=(value) #:nodoc:
         self.position_value = value || HIDDEN_POSITION
       end
 
-      def disable_system_code_change
+      def disable_system_code_change #:nodoc:
         errors.add(:system_code, "cannot be changed") if system_code_changed?
       end
 
-      def position
+      def position #:nodoc:
         position_value unless position_value == HIDDEN_POSITION
       end
 
-      def auto_gen_system_code
+      def auto_gen_system_code #:nodoc:
         unless system_code
           self.system_code= name.to_s.underscore.split(" ").join("_").singularize.underscore.gsub(/\W/, "_")
           self.system_code= parent.system_code + "_" + self.system_code if parent
@@ -73,20 +88,20 @@ module Selections
         end
       end
 
-      def check_defaults
+      def check_defaults #:nodoc:
         siblings_with_default_set.update_attribute(:is_default, false) if self.parent && siblings_with_default_set && self.is_default
         self.is_default = false if archived
       end
 
-      def siblings_with_default_set
+      def siblings_with_default_set #:nodoc:
         self.parent.children.where(:is_default => true).where("id != ?", self.id.to_i).first
       end
 
-      def archived
+      def archived #:nodoc:
         !!archived_at
       end
 
-      def archived=(archived_checkbox)
+      def archived=(archived_checkbox) #:nodoc:
         if archived_checkbox == "1"
           self.archived_at = Time.now unless archived_at
         else
@@ -97,17 +112,14 @@ module Selections
       def sub_children
         children.flat_map(&:children)
       end
-
     end
 
-    def selectable
+    def selectable #:nodoc:
       include ModelMixin
     end
 
     ActiveSupport.on_load :active_record do
       extend Selections::Selectable
     end
-
   end
-
 end

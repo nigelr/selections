@@ -1,5 +1,17 @@
 # Selections
 
+Selection list management and form and view helpers.
+
+##Key Features
+
+* Manages one table to hold all selections items/ dropdown lists ( tree )
+* Dynamic lookup to find parent or children ( eg. Selection.priorities )
+* Form helper to display lists ( eg. f.selections :priorities )
+* Model helpers for joining tables ( eg. belongs_to_selection :priority )
+* Handling of archived items ( displaying if selected only )
+* Ordering of lists based on alpha or numbered
+* Default item handling
+
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -50,7 +62,7 @@ Selection.priority => returns the parent row
 Selection.user_role
 ```
 
-dynamic lookups support pluralization and will thenreturn the children
+Dynamic lookups support pluralization and will then return the children
 
 ```ruby
 Selection.priorities => [high,med,low] records
@@ -123,7 +135,7 @@ eg: show.html.erb
 ### Automatic Features
 #### Include Blank
 
-In a new form the selections list will have blank top row unless a default item is set in the selections eg. Medium Prirority, then there
+In a new form the selections list will have blank top row unless a default item is set in the selections eg. Medium Priority, then there
 will be no blank row and the default item will be selected
 
 When editing a form, by default the blank row will not be displayed
@@ -147,6 +159,11 @@ tell selections so by adding the following to a new file, `config/initializers/s
 ```ruby
 Selections.model { YourSelectionModel }
 ```
+
+# TODO
+
+* Add model generators
+* Add selections management scaffold/generator
 
 ## Contributing
 

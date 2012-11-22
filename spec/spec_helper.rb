@@ -20,11 +20,11 @@ ActiveRecord::Migration.create_table :tickets do |t|
   t.timestamps
 end
 
-class Selection < ActiveRecord::Base
+class Selection < ActiveRecord::Base #:nodoc:
   selectable
 end
 
-class Ticket < ActiveRecord::Base
+class Ticket < ActiveRecord::Base #:nodoc:
 
 end
 

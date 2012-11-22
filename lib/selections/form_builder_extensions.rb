@@ -1,10 +1,25 @@
 module Selections
   module FormBuilderExtensions
+    # Create a select list based on the field name finding items within Selection.
+    #
+    #
+    # Example
+    #   form_for(@ticket) do |f|
+    #     f. select("priority")
+    #
+    # Uses priority_id from the ticket table and creates options list based on items in Selection table with a system_code of
+    # either priority or ticket_priority
+    #
+    # options = {} and html_options = {} suport all the keys as the rails library select_tag does.
+    #
+    # options
+    # * +system_code+ - Overrides the automatic system_code name based on the fieldname and looks up the list of items in Selection
+
     def selections(field, options = {}, html_options = {})
       SelectionTag.new(self, object, field, html_options, options).to_tag
     end
 
-    class SelectionTag
+    class SelectionTag #:nodoc:
       attr_reader :form, :object, :field, :html_options, :options, :selection, :field_id, :system_code_name
 
       def initialize(form, object, field, html_options, options)
