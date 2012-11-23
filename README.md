@@ -85,7 +85,7 @@ within the _form.html.erb just use the selections helper method
   </div>
 
   <div>
-    <%= f.label :priority_id %><br />
+    <%= f.label :priority %><br />
     <%= f.selections :priority %>
   </div>
 
