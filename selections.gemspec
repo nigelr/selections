@@ -9,28 +9,16 @@ Gem::Specification.new do |gem|
   gem.authors       = ["Nigel Rausch"]
   gem.email         = ["nigelr@brisbanerails.com"]
   gem.description   = %q{Selection list management and form and view helpers.
-
-##Key Features
-
-* Manages one table to hold all selections items/dropdown lists ( tree )
-* Dynamic lookup to find parent or children ( eg. Selection.priorities )
-* Form helper to display lists ( eg. f.selections :priorities )
-* Model helpers for joining tables ( eg. belongs_to_selection :priority )
-* Handling of archived items ( displaying if selected only )
-* Ordering of lists based on alpha or numbered
-* Default item handling
+ Manages one table to hold all selections items/dropdown lists ( tree ).
+ Dynamic lookup to find parent or children ( eg. Selection.priorities ).
+ Form helper to display lists ( eg. f.selections :priorities ).
+ Handling of archived items ( displaying if selected only ).
 }
   gem.summary       = %q{Selection list management and form and view helpers.
-
-##Key Features
-
-* Manages one table to hold all selections items/dropdown lists ( tree )
-* Dynamic lookup to find parent or children ( eg. Selection.priorities )
-* Form helper to display lists ( eg. f.selections :priorities )
-* Model helpers for joining tables ( eg. belongs_to_selection :priority )
-* Handling of archived items ( displaying if selected only )
-* Ordering of lists based on alpha or numbered
-* Default item handling
+ Manages one table to hold all selections items/dropdown lists ( tree ).
+ Dynamic lookup to find parent or children ( eg. Selection.priorities ).
+ Form helper to display lists ( eg. f.selections :priorities ).
+ Handling of archived items ( displaying if selected only ).
 }
   gem.homepage      = "https://github.com/nigelr/selections"
   gem.files         = `git ls-files`.split($/)
