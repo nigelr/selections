@@ -8,9 +8,31 @@ Gem::Specification.new do |gem|
   gem.version       = Selections::VERSION
   gem.authors       = ["Nigel Rausch"]
   gem.email         = ["nigelr@brisbanerails.com"]
-  gem.description   = %q{Selections provides a minimal set of tools for database-backed lists of select options.}
-  gem.summary       = %q{Database backed select options... of doom!}
-  gem.homepage      = ""
+  gem.description   = %q{Selection list management and form and view helpers.
+
+##Key Features
+
+* Manages one table to hold all selections items/dropdown lists ( tree )
+* Dynamic lookup to find parent or children ( eg. Selection.priorities )
+* Form helper to display lists ( eg. f.selections :priorities )
+* Model helpers for joining tables ( eg. belongs_to_selection :priority )
+* Handling of archived items ( displaying if selected only )
+* Ordering of lists based on alpha or numbered
+* Default item handling
+}
+  gem.summary       = %q{Selection list management and form and view helpers.
+
+##Key Features
+
+* Manages one table to hold all selections items/dropdown lists ( tree )
+* Dynamic lookup to find parent or children ( eg. Selection.priorities )
+* Form helper to display lists ( eg. f.selections :priorities )
+* Model helpers for joining tables ( eg. belongs_to_selection :priority )
+* Handling of archived items ( displaying if selected only )
+* Ordering of lists based on alpha or numbered
+* Default item handling
+}
+  gem.homepage      = "https://github.com/nigelr/selections"
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
