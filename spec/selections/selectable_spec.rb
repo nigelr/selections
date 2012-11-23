@@ -20,8 +20,7 @@ describe Selections do
     end
     context "archived" do
       before :each do
-        selection_2.archived = true
-        selection_2.save
+        selection_2.update_attribute(:archived, "1")
       end
       it "returns unarchived items" do
         expect(parent.children.filter_archived_except_selected(nil)).to match_array([selection_1])
@@ -162,7 +161,7 @@ describe Selections do
         it("selection_3 should not be set") { expect(selection_3.reload.is_default).to be_false }
       end
       context "archive item with default" do
-        before { selection_2.update_attributes(archived: true) }
+        before { selection_2.update_attributes(archived: "1") }
         it("should unset self as default") { expect(selection_2.reload.is_default).to be_false }
         it("selection_1 should not be set") { expect(selection_1.reload.is_default).to be_false }
         it("selection_3 should not be set") { expect(selection_3.reload.is_default).to be_false }
@@ -193,11 +192,11 @@ describe Selections do
 
   describe ".archived" do
     it "when archived set" do
-      selection_1.update_attributes(archived: true)
+      selection_1.update_attributes(archived: "1")
       expect(selection_1.archived).to be_true
     end
     it "when archived set" do
-      selection_1.update_attributes(archived: false)
+      selection_1.update_attributes(archived: "0")
       expect(selection_1.archived).to be_false
     end
   end

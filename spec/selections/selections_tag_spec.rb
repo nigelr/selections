@@ -42,7 +42,7 @@ describe SelectionTag do
       expect(SelectionTag.new(form, ticket, :priority, {}, {}).items.all).to eq(parent.children)
     end
     context "archived" do
-      before { selection_2.update_attribute(:archived, true) }
+      before { selection_2.update_attribute(:archived, "1") }
       it "returns only non archived items" do
         expect(SelectionTag.new(form, ticket, :priority, {}, {}).items).to eq(parent.children - [selection_2])
       end
