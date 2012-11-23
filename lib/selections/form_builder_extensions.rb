@@ -56,6 +56,7 @@ module Selections
           #TODO add default style
           #html_options[:style] ||=
           options[:include_blank] = include_blank?
+          options[:selected] = selected_item
           form.select field_id, items.map { |item| [item.name, item.id] }, options, html_options
         else
           "Invalid system_code of '#{system_code_name}'"

@@ -9,7 +9,7 @@ describe SelectionTag do
   let(:selection_2) { Selection.create(name: "medium", parent_id: parent.id) }
   let(:selection_3) { Selection.create(name: "high", parent_id: parent.id) }
   let(:form) { ActionView::Helpers::FormBuilder.new(:ticket, ticket, ActionView::Base.new, {}, Proc.new {}) }
-  let(:ticket) { Ticket.create(:name=>"railscamp") }
+  let(:ticket) { Ticket.create(:name => "railscamp") }
   let(:all_selections) do
     parent
     selection_1
@@ -48,7 +48,7 @@ describe SelectionTag do
       end
       it "returns archived items when selected" do
         ticket.update_attribute(:priority_id, selection_2.id)
-        expect(SelectionTag.new(form, ticket, :priority, {}, {}).items.all).to eq(parent.children )
+        expect(SelectionTag.new(form, ticket, :priority, {}, {}).items.all).to eq(parent.children)
       end
     end
   end
@@ -163,43 +163,40 @@ describe SelectionTag do
     end
   end
 
-
-
-
-
-  #describe ".options_html" do
-  #  it "should return none" do
-  #    #expect(SelectionTag.new(form, ticket, :priority, {}, {}))
-  #    selection_1
-  #    p SelectionTag.new(form, ticket, :priority, {}, {}).options_html
-  #  end
-  #end
   describe ".to_tag" do
     it "displays warning when system_code does not exist" do
       expect(SelectionTag.new(form, ticket, :priority, {}, {}).to_tag).to eq("Invalid system_code of 'priority'")
     end
     context "valid system_code" do
-      before do
-        all_selections
+      before { all_selections }
+
+      context "new form" do
+        context "no default" do
+          it("has no selected item") { expect(Nokogiri::HTML(SelectionTag.new(form, Ticket.new, :priority, {}, {}).to_tag).search("option[selected]")).to be_empty }
+          it("has a blank option") { expect(Nokogiri::HTML(SelectionTag.new(form, Ticket.new, :priority, {}, {}).to_tag).search("option[value='']").count).to eq(1) }
+        end
+        context "default is set" do
+          before { selection_3.update_attribute(:is_default, true) }
+
+          it("has selection_3 selected") { expect(Nokogiri::HTML(SelectionTag.new(form, Ticket.new, :priority, {}, {}).to_tag).search("option[selected]").first.content).to eq(selection_3.name) }
+          it("has no blank option") { expect(Nokogiri::HTML(SelectionTag.new(form, Ticket.new, :priority, {}, {}).to_tag).search("option[value='']").count).to eq(0) }
+        end
       end
-      context "no default" do
-        it "has non selected when new form" do
-          expect(Nokogiri::HTML(SelectionTag.new(form, Ticket.new, :priority, {}, {}).to_tag).search("option[selected]")).to be_empty
+
+      context "edit form" do
+        context "relation (priority_id) is nil" do
+          it("has no selected item") { expect(Nokogiri::HTML(SelectionTag.new(form, ticket, :priority, {}, {}).to_tag).search("option[selected]")).to be_empty }
+          it("has a blank option") { expect(Nokogiri::HTML(SelectionTag.new(form, ticket, :priority, {}, {}).to_tag).search("option[value='']").count).to eq(1) }
         end
-        it "has non selected when relation is nil" do
-          expect(Nokogiri::HTML(SelectionTag.new(form, ticket, :priority, {}, {}).to_tag).search("option[selected]")).to be_empty
-        end
-        it "has selected when relation is nil" do
-          ticket.update_attribute(:priority_id, selection_3.id)
-          expect(Nokogiri::HTML(SelectionTag.new(form, ticket, :priority, {}, {}).to_tag).search("option[selected]").first.content).to eq(selection_3.name)
+        context "when relation (priority_id) is set to selection_3" do
+          before { ticket.update_attribute(:priority_id, selection_3.id) }
+
+          it("item is selected") { expect(Nokogiri::HTML(SelectionTag.new(form, ticket, :priority, {}, {}).to_tag).search("option[selected]").first.content).to eq(selection_3.name) }
+          it("has no blank option") { expect(Nokogiri::HTML(SelectionTag.new(form, ticket, :priority, {}, {}).to_tag).search("option[value='']").count).to eq(0) }
         end
       end
-      it "nigel" do
-        ticket.update_attribute(:priority_id, selection_3.id)
-        p Nokogiri::HTML(SelectionTag.new(form, ticket, :priority, {}, {}).to_tag).
-              search("option[selected]").first.content
-        #expect(Nokogiri::HTML(SelectionTag.new(form, ticket, :priority, {}, {selected: selection_2.id.to_s}).to_tag).
-        #           search("option[selected]").first.content).to
+      it "returns valid html" do
+        expect(SelectionTag.new(form, ticket, :priority, {}, {}).to_tag).to eq "<select id=\"ticket_priority_id\" name=\"ticket[priority_id]\"><option value=\"\"></option>\n<option value=\"4\">high</option>\n<option value=\"2\">low</option>\n<option value=\"3\">medium</option></select>"
       end
     end
   end
