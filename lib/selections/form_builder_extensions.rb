@@ -22,7 +22,7 @@ module Selections
     class SelectionTag #:nodoc:
       attr_reader :form, :object, :field, :html_options, :options, :selection, :field_id, :system_code_name
 
-      def initialize(form, object, field, html_options, options)
+      def initialize(form, object, field, options, html_options)
         @form = form
         @object = object
         @field = field
