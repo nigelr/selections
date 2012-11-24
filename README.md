@@ -45,24 +45,25 @@ end
 ```
 
 Selections table can contain one or many lists, it uses the acts_as_tree so each root is a new list
-meta example: (see below for example YAML file)
- - priority
-   - high
-   - medium
-   - low
- - user_role
-   - admin
-   - owner
-   - user
+meta example: (see below for example YAML file).
 
-From the rails console it is be possible to access these items directly using dynamic lookups
+* priority
+ - high
+ - medium
+ - low
+* user_role
+ - admin
+ - owner
+ - user
+
+From the rails console it is be possible to access these items directly using dynamic lookups:
 
 ```ruby
 Selection.priority => returns the parent row
 Selection.user_role
 ```
 
-Dynamic lookups support pluralization and will then return the children
+Dynamic lookups support pluralization and will then return the children:
 
 ```ruby
 Selection.priorities => [high,med,low] records
@@ -70,11 +71,12 @@ Selection.priorities => [high,med,low] records
 
 #### Form Helper
 
-if we had a controller for Ticket model with fields of
-- name
-- priority_id
+if we had a controller for Ticket model with fields of:
 
-within the _form.html.erb just use the selections helper method
+* name
+* priority_id
+
+within the _form.html.erb just use the selections helper method:
 
 ```ruby
 <%= form_for(@ticket) do |f| %>
@@ -98,13 +100,15 @@ within the _form.html.erb just use the selections helper method
 If you have naming conflicts/duplicates eg. user categories and ticket categories within in the selections name the parent/system_code
 user_category & ticket_category. The foreign key within the user and ticket can both be category_id and the form_helper will still be
 
-user form
+user form file
+
 ```ruby
 f.selections :category
 ```
+
 this will automatically look up the user_category selections.
 
-If you have a selection named differently to the foreign key eg the foreign key is variety_id, you can use a system_code option
+If you have a selection named differently to the foreign key eg the foreign key is variety_id, you can use a system_code option.
 
 ```ruby
 f.selections :variety, :system_code => :category
@@ -125,7 +129,6 @@ end
 From an instance of a ticket within a view the belongs_to selection will return string (to_s).
 eg: show.html.erb
 
-
 ```ruby
   ticket.priority.try(:name) # don't need to do this
 
@@ -136,16 +139,16 @@ eg: show.html.erb
 #### Include Blank
 
 In a new form the selections list will have blank top row unless a default item is set in the selections eg. Medium Priority, then there
-will be no blank row and the default item will be selected
+will be no blank row and the default item will be selected.
 
-When editing a form, by default the blank row will not be displayed
+When editing a form, by default the blank row will not be displayed.
 
 #### Archived Item
 
 On a new form items that are archived in Selections will not appear in the selection list. When editing an existing record the list will only
 contain un-archived items, unless the item selected is archived it will then appear.
 
-eg. A ticket has a priority set to high, later the high selection list item was archived, when we edit the ticket record again the item will show in the list even though it is archived
+eg. A ticket has a priority set to high, later the high selection list item was archived, when we edit the ticket record again the item will show in the list even though it is archived.
 
 #### Order
 
@@ -173,7 +176,7 @@ Selections.model { YourSelectionModel }
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
 
-## YAML example
+## example selections.yml
 
 ```yaml
 priority:
