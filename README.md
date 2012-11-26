@@ -35,7 +35,7 @@ can change the name), and should be generated such as:
 rails generate model Selection name parent_id:integer system_code position_value:integer is_default:boolean is_system:boolean archived_at:datetime
 ```
 
-### Model
+### Selection Model 
 And next, edit this class to look like:
 
 ```ruby
@@ -66,7 +66,7 @@ Selection.user_role
 Dynamic lookups support pluralization and will then return the children:
 
 ```ruby
-Selection.priorities => [high,med,low] records
+Selection.priorities  -> [high,med,low] records
 ```
 
 #### Form Helper
@@ -97,22 +97,47 @@ within the _form.html.erb just use the selections helper method:
 <% end %>
 ```
 
-If you have naming conflicts/duplicates eg. user categories and ticket categories within in the selections name the parent/system_code
-user_category & ticket_category. The foreign key within the user and ticket can both be category_id and the form_helper will still be
-
-user form file
+### Form Helper method options
 
 ```ruby
-f.selections :category
+  f.selections :fieldname, options = {}, html_options = {}
 ```
 
-this will automatically look up the user_category selections.
+the selections method excepts all the standard Ruby on Rails form helper options and html formatting - http://api.rubyonrails.org/classes/ActionView/Helpers/FormOptionsHelper.html#method-i-select
 
-If you have a selection named differently to the foreign key eg the foreign key is variety_id, you can use a system_code option.
+#### System Code Override
+
+If you have a selection named differently to the foreign key eg. the foreign key is variety_id, you can use a system_code option.
 
 ```ruby
-f.selections :variety, :system_code => :category
+<%= f.selections :variety, :system_code => :category %>
 ```
+
+### Scoped Parent Code
+
+If you have naming conflicts/duplicates parent codes (system_codes) eg. category_id field for user and ticket models
+
+Selections Data example
+
+* user_category
+ - civilian
+ - programmer
+* ticket_category
+ - high
+ - low
+
+The fieldname within the user and ticket form can both be :category as the form helper will search for
+either category or user_category in the selections model.
+
+users/_form.html.erb
+
+```ruby
+  <%= f.selections :category %>
+```
+
+This will automatically look up the user_category selections.
+
+## Related Models
 
 Next, you need to tell models that have a selectable association. These are `belongs_to` associations
 which pull their values from the selections model. Assuming you have a `Ticket` model with a foreign key of priority_id,
@@ -130,18 +155,19 @@ From an instance of a ticket within a view the belongs_to selection will return 
 eg: show.html.erb
 
 ```ruby
-  ticket.priority.try(:name) # don't need to do this
-
-  ticket.priority # will default to return name
+<p>
+  <b>Priority:</b>
+  <%= @ticket.priority %>  # Don't need to do this @ticket.priority.try(:name)
+</p>
 ```
 
-### Automatic Features
+## Automatic Features
 #### Include Blank
 
 In a new form the selections list will have blank top row unless a default item is set in the selections eg. Medium Priority, then there
 will be no blank row and the default item will be selected.
 
-When editing a form, by default the blank row will not be displayed.
+When editing a form, by default the blank row will not be displayed. Use the options :include_blank => true option to overrided.
 
 #### Archived Item
 
@@ -153,6 +179,9 @@ eg. A ticket has a priority set to high, later the high selection list item was 
 #### Order
 
 The list will by default display in alphanumeric order, unless you add position values and then it will display in the values.
+
+#### system_code generation
+On creation of a new item in Selections the system_code field will be automatically generated based on parent and item name if left blank.
 
 ## Configuration
 
@@ -176,7 +205,7 @@ Selections.model { YourSelectionModel }
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
 
-## example selections.yml
+## example selections.yml to import into DB
 
 ```yaml
 priority:
