@@ -9,3 +9,7 @@
 ## 0.1.2
 
 * Fixing issues with readme
+
+## 0.1.3
+
+* Fixing issue with dependencies on Rubygems
