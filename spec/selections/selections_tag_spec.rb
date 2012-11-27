@@ -178,8 +178,13 @@ describe SelectionTag do
   end
 
   describe ".to_tag" do
-    it "displays warning when system_code does not exist" do
-      expect(edit_form.to_tag).to eq("Invalid system_code of 'priority'")
+    context "invalid" do
+      it "displays warning when system_code does not exist" do
+        expect(edit_form.to_tag).to eq("Could not find system_code of 'priority' or 'ticket_priority'")
+      end
+      it "displays warning for system_code override" do
+        expect(edit_form(options: {system_code: "hello"}).to_tag).to eq("Could not find system_code of 'hello' or 'ticket_hello'")
+      end
     end
     context "valid system_code" do
       before { all_selections }

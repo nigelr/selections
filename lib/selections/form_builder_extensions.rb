@@ -59,7 +59,7 @@ module Selections
           options[:selected] = selected_item
           form.select field_id, items.map { |item| [item.name, item.id] }, options, html_options
         else
-          "Invalid system_code of '#{system_code_name}'"
+          "Could not find system_code of '#{system_code_name}' or '#{form.object_name}_#{system_code_name}'"
         end
       end
 
