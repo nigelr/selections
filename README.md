@@ -97,13 +97,13 @@ within the _form.html.erb just use the selections helper method:
 <% end %>
 ```
 
-### Form Helper method options
+### Form Helper Options
 
 ```ruby
   f.selections :fieldname, options = {}, html_options = {}
 ```
 
-the selections method excepts all the standard Ruby on Rails form helper options and html formatting - http://api.rubyonrails.org/classes/ActionView/Helpers/FormOptionsHelper.html#method-i-select
+The selections method excepts all the standard Ruby on Rails form helper options and html formatting - http://api.rubyonrails.org/classes/ActionView/Helpers/FormOptionsHelper.html#method-i-select
 
 #### System Code Override
 
@@ -113,9 +113,9 @@ If you have a selection named differently to the foreign key eg. the foreign key
 <%= f.selections :variety, :system_code => :category %>
 ```
 
-### Scoped Parent Code
+### Scoped System Code
 
-If you have naming conflicts/duplicates parent codes (system_codes) eg. category_id field for user and ticket models
+If you have naming conflicts/duplicates system_codes (parent codes) eg. category_id field for user and ticket models
 
 Selections Data example
 
@@ -127,7 +127,7 @@ Selections Data example
  - low
 
 The fieldname within the user and ticket form can both be :category as the form helper will search for
-either category or user_category in the selections model.
+either 'category' or 'user_category' in the selections model.
 
 users/_form.html.erb
 
@@ -135,7 +135,7 @@ users/_form.html.erb
   <%= f.selections :category %>
 ```
 
-This will automatically look up the user_category selections.
+This will automatically look up the 'user_category' selections if 'category' does not exist
 
 ## Related Models
 
@@ -157,7 +157,7 @@ eg: show.html.erb
 ```ruby
 <p>
   <b>Priority:</b>
-  <%= @ticket.priority %>  # Don't need to do this @ticket.priority.try(:name)
+  <%= @ticket.priority %>  # Instead of this @ticket.priority.try(:name)
 </p>
 ```
 
