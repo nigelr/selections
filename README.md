@@ -196,6 +196,7 @@ Selections.model { YourSelectionModel }
 
 * Add model generators
 * Add selections management scaffold/generator
+* Add Radio Button support
 
 ## Contributing
 
