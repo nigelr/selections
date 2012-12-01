@@ -43,8 +43,8 @@ module Selections
       end
 
       def system_code
-        @system_code ||= selection.where(system_code: system_code_name.to_s).first
         @system_code ||= selection.where(system_code: "#{form.object_name}_#{system_code_name}").first
+        @system_code ||= selection.where(system_code: system_code_name.to_s).first
       end
 
       def items

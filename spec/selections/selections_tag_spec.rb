@@ -41,6 +41,13 @@ describe SelectionTag do
       before { parent }
       it("returns priority selection item") { expect(edit_form.system_code).to eq(parent) }
       it("does not find") { expect(edit_form(field: "non_existent").system_code).to be_nil }
+      context "when more explicit route should found first" do
+        before { model_parent }
+        it("should find more explicit route of model parent") { expect(edit_form.system_code).to eq(model_parent) }
+        it "should use priority system_code when model is not ticket" do
+          expect(edit_form(form: ActionView::Helpers::FormBuilder.new(:user, :user, ActionView::Base.new, {}, Proc.new {}) ).system_code).to eq(parent)
+        end
+      end
     end
 
     it "finds with form model prefixed" do
