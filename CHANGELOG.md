@@ -13,3 +13,8 @@
 ## 0.1.3
 
 * Fixing issue with dependencies on Rubygems
+
+## 0.1.5
+
+* Fixed issue with options and html_options order
+
