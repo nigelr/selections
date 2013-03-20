@@ -1,5 +1,5 @@
 
-## 0.1.4
+## 0.1.5
 
 * https://github.com/nigelr/selections/issues/5 - issue with forgetting selected items if page failed validation
 
