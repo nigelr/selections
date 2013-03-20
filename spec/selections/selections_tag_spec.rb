@@ -51,7 +51,7 @@ describe SelectionTag do
     end
 
     context "system_code override" do
-      it "meme" do
+      it 'passes through system code' do
         hello = Selection.create(name: "hello")
         parent
         expect(new_form(options: {system_code: :hello} ).system_code).to eq hello
