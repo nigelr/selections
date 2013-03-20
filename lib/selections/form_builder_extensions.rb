@@ -16,11 +16,11 @@ module Selections
     # * +system_code+ - Overrides the automatic system_code name based on the fieldname and looks up the list of items in Selection
 
     def selections(field, options = {}, html_options = {})
-      SelectionTag.new(self, object, field, html_options, options).to_tag
+      SelectionTag.new(self, object, field, options, html_options).to_tag
     end
 
     class SelectionTag #:nodoc:
-      attr_reader :form, :object, :field, :html_options, :options, :selection, :field_id, :system_code_name
+      attr_reader :form, :object, :field, :options, :html_options, :selection, :field_id, :system_code_name
 
       def initialize(form, object, field, options, html_options)
         @form = form

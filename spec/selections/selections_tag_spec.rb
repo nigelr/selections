@@ -50,6 +50,14 @@ describe SelectionTag do
       end
     end
 
+    context "system_code override" do
+      it "meme" do
+        hello = Selection.create(name: "hello")
+        parent
+        expect(new_form(options: {system_code: :hello} ).system_code).to eq hello
+      end
+    end
+
     it "finds with form model prefixed" do
       model_parent
       expect(edit_form.system_code).to eq(model_parent)
