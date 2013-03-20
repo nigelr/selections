@@ -64,8 +64,8 @@ module Selections
       end
 
       def selected_item
-        if object.new_record?
-          default_item
+        if object.new_record? && object.send(field_id).blank?
+           default_item
         else
           object.send(field_id).to_s
         end

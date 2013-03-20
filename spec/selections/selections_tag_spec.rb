@@ -13,7 +13,7 @@ def new_form args = {}
 end
 
 def common_form args = {}
-  args[:form]   ||= form
+  args[:form] ||= form
   args[:field] ||= :priority
   args[:html_options] ||= {}
   args[:options] ||= {}
@@ -45,7 +45,7 @@ describe SelectionTag do
         before { model_parent }
         it("should find more explicit route of model parent") { expect(edit_form.system_code).to eq(model_parent) }
         it "should use priority system_code when model is not ticket" do
-          expect(edit_form(form: ActionView::Helpers::FormBuilder.new(:user, :user, ActionView::Base.new, {}, Proc.new {}) ).system_code).to eq(parent)
+          expect(edit_form(form: ActionView::Helpers::FormBuilder.new(:user, :user, ActionView::Base.new, {}, Proc.new {})).system_code).to eq(parent)
         end
       end
     end
@@ -166,21 +166,54 @@ describe SelectionTag do
     before { all_selections }
 
     context "when default not set" do
-      it("when new form") { expect(new_form.selected_item).to eq("") }
-      it "when edit form with ticket.priority_id set" do
-        ticket.update_attribute(:priority_id, selection_3.id)
-        expect(edit_form.selected_item).to eq(selection_3.id.to_s)
+      context "when new form" do
+        it 'has no value' do
+          expect(new_form.selected_item).to eq("")
+        end
+        it 'priority value is already set (simulating a failed validation)' do
+          expect(new_form(object: Ticket.new(priority_id: selection_3.id)).selected_item).to eq(selection_3.id.to_s)
+        end
       end
-      it("when edit form with no ticket.priority_id set") { expect(edit_form.selected_item).to eq("") }
+      context "when edit form" do
+        context "ticket.priority_id set" do
+          before { ticket.update_attribute(:priority_id, selection_3.id) }
+
+          it { expect(edit_form.selected_item).to eq(selection_3.id.to_s) }
+          it 'priority value is changed (simulating a failed validation)' do
+            expect(edit_form(object: ticket.assign_attributes(priority_id: selection_2.id)).selected_item).to eq(selection_2.id.to_s)
+          end
+        end
+        context 'no ticket.priority_id set' do
+          it { expect(edit_form.selected_item).to eq("") }
+          it 'priority value is changed (simulating a failed validation)' do
+            expect(edit_form(object: ticket.assign_attributes(priority_id: selection_2.id)).selected_item).to eq(selection_2.id.to_s)
+          end
+        end
+      end
     end
     context "when default is set" do
       before { selection_2.update_attribute(:is_default, true) }
-      it("when new form") { expect(new_form.selected_item).to eq(selection_2.id.to_s) }
-      it "when edit form with ticket.priority_id set" do
-        ticket.update_attribute(:priority_id, selection_3.id)
-        expect(edit_form.selected_item).to eq(selection_3.id.to_s)
+
+      context 'new form' do
+        it { expect(new_form.selected_item).to eq(selection_2.id.to_s) }
+        it 'priority value is already set (simulating a failed validation)' do
+          expect(new_form(object: Ticket.new(priority_id: selection_3.id)).selected_item).to eq(selection_3.id.to_s)
+        end
       end
-      it("when edit form with no ticket.priority_id set") { expect(edit_form.selected_item).to eq("") }
+
+      context 'edit form' do
+        it('has no ticket.priority_id set') { expect(edit_form.selected_item).to eq("") }
+        context 'has ticket.priority_id set' do
+          before { ticket.update_attribute(:priority_id, selection_3.id) }
+
+          it 'should not change' do
+            expect(edit_form.selected_item).to eq(selection_3.id.to_s)
+          end
+          it 'priority value is changed (simulating a failed validation)' do
+            expect(edit_form(object: ticket.assign_attributes(priority_id: selection_2.id)).selected_item).to eq(selection_2.id.to_s)
+          end
+        end
+      end
     end
   end
 
