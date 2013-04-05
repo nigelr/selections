@@ -1,3 +1,7 @@
+## 0.1.8
+
+* https://github.com/nigelr/selections/issues/2 - Added feature of radios for radio_buttons
+
 ## 0.1.7
 
 * https://github.com/nigelr/selections/issues/5 - issue with forgetting selected item when page was invalid

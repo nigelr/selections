@@ -4,9 +4,11 @@ Selection list management and form and view helpers.
 
 ##Key Features
 
-* Manages one table to hold all selections items/ dropdown lists ( tree )
+* Manages one table to hold all selections items/dropdown lists or Radio Buttons ( tree )
 * Dynamic lookup to find parent or children ( eg. Selection.priorities )
-* Form helper to display lists ( eg. f.selections :priorities )
+* Form helper to display lists
+ - f.selections :priorities # dropdowns
+ - f.radios :priorities # radio buttons
 * Model helpers for joining tables ( eg. belongs_to_selection :priority )
 * Handling of archived items ( displaying if selected only )
 * Ordering of lists based on alpha or numbered
@@ -69,9 +71,9 @@ Dynamic lookups support pluralization and will then return the children:
 Selection.priorities  -> [high,med,low] records
 ```
 
-#### Form Helper
+## Form Helper
 
-if we had a controller for Ticket model with fields of:
+If we had a controller for Ticket model with fields of:
 
 * name
 * priority_id
@@ -97,7 +99,7 @@ within the _form.html.erb just use the selections helper method:
 <% end %>
 ```
 
-### Form Helper Options
+### Selection List Options
 
 ```ruby
   f.selections :fieldname, options = {}, html_options = {}
@@ -112,6 +114,12 @@ If you have a selection named differently to the foreign key eg. the foreign key
 ```ruby
 <%= f.selections :variety, :system_code => :category %>
 ```
+
+### Radio Buttons Options
+'''ruby
+  f.radios :ticket, options = {}, html_options = {}
+'''
+The radios method excepts all the standard Ruby on Rails form helper options and html formatting - http://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html#method-i-radio_button
 
 ### Scoped System Code
 
@@ -196,7 +204,6 @@ Selections.model { YourSelectionModel }
 
 * Add model generators
 * Add selections management scaffold/generator
-* Add Radio Button support
 
 ## Contributing
 

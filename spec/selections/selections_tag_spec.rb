@@ -1,4 +1,4 @@
-require "spec_helper"
+require 'spec_helper'
 
 include Selections::FormBuilderExtensions
 
@@ -225,45 +225,102 @@ describe SelectionTag do
     end
   end
 
-  describe ".to_tag" do
-    context "invalid" do
-      it "displays warning when system_code does not exist" do
-        expect(edit_form.to_tag).to eq("Could not find system_code of 'priority' or 'ticket_priority'")
+  describe '.blank_content' do
+    it 'when nothing set' do
+      expect(new_form.blank_content).to eq('none')
+    end
+    it 'when set' do
+      expect(new_form(options: {blank_content: 'hello'}).blank_content).to eq('hello')
+    end
+  end
+
+  context 'html output' do
+    describe '.select_tag' do
+      context 'invalid' do
+        it 'displays warning when system_code does not exist' do
+          expect(edit_form.select_tag).to eq("Could not find system_code of 'priority' or 'ticket_priority'")
+        end
+        it 'displays warning for system_code override' do
+          expect(edit_form(options: {system_code: 'hello'}).select_tag).to eq("Could not find system_code of 'hello' or 'ticket_hello'")
+        end
       end
-      it "displays warning for system_code override" do
-        expect(edit_form(options: {system_code: "hello"}).to_tag).to eq("Could not find system_code of 'hello' or 'ticket_hello'")
+      context 'valid system_code' do
+        before { all_selections }
+
+        context 'new form' do
+          context 'no default' do
+            it('has no selected item') { expect(Nokogiri::HTML(new_form.select_tag).search('option[selected]')).to be_empty }
+            it('has a blank option') { expect(Nokogiri::HTML(new_form.select_tag).search("option[value='']").count).to eq(1) }
+          end
+          context 'default is set' do
+            before { selection_3.update_attribute(:is_default, true) }
+
+            it('has selection_3 selected') { expect(Nokogiri::HTML(new_form.select_tag).search('option[selected]').first.content).to eq(selection_3.name) }
+            it('has no blank option') { expect(Nokogiri::HTML(new_form.select_tag).search("option[value='']").count).to eq(0) }
+          end
+        end
+
+        context 'edit form' do
+          context 'relation (priority_id) is nil' do
+            it('has no selected item') { expect(Nokogiri::HTML(edit_form.select_tag).search('option[selected]')).to be_empty }
+            it('has a blank option') { expect(Nokogiri::HTML(edit_form.select_tag).search("option[value='']").count).to eq(1) }
+          end
+          context 'when relation (priority_id) is set to selection_3' do
+            before { ticket.update_attribute(:priority_id, selection_3.id) }
+
+            it('item is selected') { expect(Nokogiri::HTML(edit_form.select_tag).search('option[selected]').first.content).to eq(selection_3.name) }
+            it('has no blank option') { expect(Nokogiri::HTML(edit_form.select_tag).search("option[value='']").count).to eq(0) }
+          end
+        end
+        it 'returns valid html' do
+          expect(edit_form.select_tag).to eq "<select id=\"ticket_priority_id\" name=\"ticket[priority_id]\"><option value=\"\"></option>\n<option value=\"4\">high</option>\n<option value=\"2\">low</option>\n<option value=\"3\">medium</option></select>"
+        end
       end
     end
-    context "valid system_code" do
-      before { all_selections }
-
-      context "new form" do
-        context "no default" do
-          it("has no selected item") { expect(Nokogiri::HTML(new_form.to_tag).search("option[selected]")).to be_empty }
-          it("has a blank option") { expect(Nokogiri::HTML(new_form.to_tag).search("option[value='']").count).to eq(1) }
+    describe '.radio_tag' do
+      context 'invalid' do
+        it 'displays warning when system_code does not exist' do
+          expect(edit_form.radio_tag).to eq("Could not find system_code of 'priority' or 'ticket_priority'")
         end
-        context "default is set" do
-          before { selection_3.update_attribute(:is_default, true) }
-
-          it("has selection_3 selected") { expect(Nokogiri::HTML(new_form.to_tag).search("option[selected]").first.content).to eq(selection_3.name) }
-          it("has no blank option") { expect(Nokogiri::HTML(new_form.to_tag).search("option[value='']").count).to eq(0) }
+        it 'displays warning for system_code override' do
+          expect(edit_form(options: {system_code: "hello"}).radio_tag).to eq("Could not find system_code of 'hello' or 'ticket_hello'")
         end
       end
+      context 'valid system_code' do
+        before { all_selections }
 
-      context "edit form" do
-        context "relation (priority_id) is nil" do
-          it("has no selected item") { expect(Nokogiri::HTML(edit_form.to_tag).search("option[selected]")).to be_empty }
-          it("has a blank option") { expect(Nokogiri::HTML(edit_form.to_tag).search("option[value='']").count).to eq(1) }
-        end
-        context "when relation (priority_id) is set to selection_3" do
-          before { ticket.update_attribute(:priority_id, selection_3.id) }
+        context 'new form' do
+          context 'no default' do
+            it('has no selected item') { expect(Nokogiri::HTML(new_form.radio_tag).search('input[checked]')).to be_empty }
+            it('has a blank option') { expect(Nokogiri::HTML(new_form.radio_tag).search('label').first.content).to eq('none') }
+            it('has a custom blank option') { expect(Nokogiri::HTML(new_form(options: {blank_content: 'hello'}).radio_tag).search('label').first.content).to eq('hello') }
+          end
+          context 'default is set' do
+            before { selection_3.update_attribute(:is_default, true) }
 
-          it("item is selected") { expect(Nokogiri::HTML(edit_form.to_tag).search("option[selected]").first.content).to eq(selection_3.name) }
-          it("has no blank option") { expect(Nokogiri::HTML(edit_form.to_tag).search("option[value='']").count).to eq(0) }
+            it('has selection_3 selected') { expect(Nokogiri::HTML(new_form.radio_tag).search('input[checked]').first['value']).to eq(selection_3.id.to_s) }
+            it('has no blank option') { expect(Nokogiri::HTML(new_form.radio_tag).search('label').first.content).to eq(selection_3.name) }
+          end
         end
-      end
-      it "returns valid html" do
-        expect(edit_form.to_tag).to eq "<select id=\"ticket_priority_id\" name=\"ticket[priority_id]\"><option value=\"\"></option>\n<option value=\"4\">high</option>\n<option value=\"2\">low</option>\n<option value=\"3\">medium</option></select>"
+
+        context 'edit form' do
+          context 'relation (priority_id) is nil' do
+            it('has no selected item') { expect(Nokogiri::HTML(edit_form.radio_tag).search('input[checked]')).to be_empty }
+            it('has a blank option') { expect(Nokogiri::HTML(edit_form.radio_tag).search('label').first.content).to eq('none') }
+          end
+          context 'when relation (priority_id) is set to selection_3' do
+            before { ticket.update_attribute(:priority_id, selection_3.id) }
+
+            it('item is selected') { expect(Nokogiri::HTML(edit_form.radio_tag).search('input[checked]').first['value']).to eq(selection_3.id.to_s) }
+            it('has no blank option') { expect(Nokogiri::HTML(edit_form.radio_tag).search('label').first.content).to eq(selection_3.name) }
+            it('has a blank option when include_blank set') { expect(Nokogiri::HTML(edit_form(options: {include_blank: true}).radio_tag).search('label').first.content).to eq('none') }
+          end
+        end
+        it 'returns valid html' do
+          ticket.update_attribute(:priority_id, selection_3.id)
+          #p edit_form(options: {:include_blank => true}, html_options: {class: 'fred'}).radio_tag
+          expect(edit_form(options: {:include_blank => true}, html_options: {class: 'fred'}).radio_tag).to eq "<label class=\"fred\" for=\"ticket_priority_id\"><input class=\"fred\" id=\"ticket_priority_id\" name=\"ticket[priority_id]\" type=\"radio\" />none</label><label checked=\"checked\" class=\"fred\" for=\"ticket_priority_id\"><input checked=\"checked\" class=\"fred\" id=\"ticket_priority_id_4\" name=\"ticket[priority_id]\" type=\"radio\" value=\"4\" />high</label><label class=\"fred\" for=\"ticket_priority_id\"><input class=\"fred\" id=\"ticket_priority_id_2\" name=\"ticket[priority_id]\" type=\"radio\" value=\"2\" />low</label><label class=\"fred\" for=\"ticket_priority_id\"><input class=\"fred\" id=\"ticket_priority_id_3\" name=\"ticket[priority_id]\" type=\"radio\" value=\"3\" />medium</label>"
+        end
       end
     end
   end
