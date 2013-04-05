@@ -70,7 +70,7 @@ module Selections
           options[:selected] = selected_item
           form.select field_id, items.map { |item| [item.name, item.id] }, options, html_options
         else
-          "Could not find system_code of '#{system_code_name}' or '#{form.object_name}_#{system_code_name}'"
+          error_message
         end
       end
 
@@ -84,10 +84,14 @@ module Selections
             build + form.label(field_id, html_options) do
               form.radio_button(field_id, item.id, html_options) + item.name
             end
-          end
+          end.html_safe
         else
-          "Could not find system_code of '#{system_code_name}' or '#{form.object_name}_#{system_code_name}'"
+          error_message
         end
+      end
+
+      def error_message
+        "Could not find system_code of '#{system_code_name}' or '#{form.object_name}_#{system_code_name}'"
       end
 
       def selected_item
