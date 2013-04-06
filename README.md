@@ -118,7 +118,7 @@ If you have a selection named differently to the foreign key eg. the foreign key
 ### Radio Buttons Options
 
 ```ruby
-  f.radios :ticket, options = {}, html_options = {}
+  f.radios :ticket, options = {}
 ```
 
 The radios method excepts all the standard Ruby on Rails form helper options and html formatting - http://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html#method-i-radio_button
