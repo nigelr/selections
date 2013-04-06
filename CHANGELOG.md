@@ -1,4 +1,4 @@
-## 0.1.9
+## 0.1.10
 
 * https://github.com/nigelr/selections/issues/2 - Added feature of radios for radio_buttons
 

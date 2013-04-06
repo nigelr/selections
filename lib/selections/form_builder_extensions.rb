@@ -26,7 +26,9 @@ module Selections
     # options
     # * +system_code+ - Overrides the automatic system_code name based on the fieldname and looks up the list of items in Selection
 
-    def radios(field, options = {}, html_options = {})
+    def radios(field, options = {})
+      html_options = options
+      html_options.delete_if {|key, value| key == :system_code}
       SelectionTag.new(self, object, field, options, html_options).radio_tag
     end
 
@@ -79,9 +81,9 @@ module Selections
           items.unshift(selection.new(name: blank_content)) if include_blank?
 
           items.inject('') do |build, item|
+            label_html_options = item.id ? html_options.merge(value: item.id.to_s) : html_options
             html_options[:checked] = selected_item == item.id.to_s && !item.new_record?
-
-            build + form.label(field_id, html_options) do
+            build + form.label(field_id, label_html_options) do
               form.radio_button(field_id, item.id, html_options) + item.name
             end
           end.html_safe
