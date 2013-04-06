@@ -27,7 +27,7 @@ module Selections
     # * +system_code+ - Overrides the automatic system_code name based on the fieldname and looks up the list of items in Selection
 
     def radios(field, options = {})
-      html_options = options
+      html_options = options.clone
       html_options.delete_if {|key, value| key == :system_code}
       SelectionTag.new(self, object, field, options, html_options).radio_tag
     end
