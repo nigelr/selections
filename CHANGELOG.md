@@ -1,3 +1,7 @@
+## 0.1.12
+
+* https://github.com/nigelr/selections/issues/6 - #label_to_id feature to allow quick ID lookups within factories (speed enhancement)
+
 ## 0.1.11
 
 * https://github.com/nigelr/selections/issues/2 - Added feature of radios for radio_buttons

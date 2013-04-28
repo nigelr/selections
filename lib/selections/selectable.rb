@@ -52,7 +52,31 @@ module Selections
           end
         end
 
+        # label_to_id
+        #
+        # When using fixtures with the label same as the system_code, use this method to return the ID of the of the fixture
+        # and use this in Factories instead of using a lookup as it does not need a DB search.
+        #
+        # eg:
+        # Fixture File
+        #----------------------------------------
+        # priority_high:
+        #   name: Priorities
+        #   system_code: priority_high
+        #   parent: priority
+        #----------------------------------------
+        #
+        # in Factory
+        # ---------------------------------------
+        # priority: { Selection.priority_high }     <== Don't do this as it will need a DB lookup
+        #
+        # priority_id: { Selection.label_to_id(:priority_high) }    <== This will be much quicker
+        #
+        def label_to_id(label)
+          ActiveRecord::Fixtures.identify(label)
+        end
       end
+
 
       def to_s #:nodoc:
         name.to_s
