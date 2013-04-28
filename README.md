@@ -207,21 +207,22 @@ Selections.model { YourSelectionModel }
 
 When using fixtures with the label same as the system_code, use this method to return the ID of the of the fixture and use this in Factories instead of using a lookup as it does not need a DB search.
 
- eg:
- Fixture File
-----------------------------------------
- priority_high:
+Fixture File
+```yaml
+priority_high:
    name: Priorities
    system_code: priority_high
    parent: priority
-----------------------------------------
-
-#### in Factory
----------------------------------------
- priority: { Selection.priority_high }     <== Don't do this as it will need a DB lookup
-
- priority_id: { Selection.label_to_id(:priority_high) }    <== This will be much quicker
-
+```   
+### In Factory
+Don't do this as it will need a DB lookup
+```ruby
+  priority: { Selection.priority_high }     
+```
+Do this as it will be much quicker
+```ruby
+ priority_id: { Selection.label_to_id(:priority_high) }    
+```
 
 
 # TODO
