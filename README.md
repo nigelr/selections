@@ -44,19 +44,17 @@ can change the name), and should be generated such as:
 
 ```ruby
 rails generate model Selection name parent_id:integer system_code position_value:integer is_default:boolean is_system:boolean archived_at:datetime
-```
 
-### Selection Model 
-And next, edit this class to look like:
 
-```ruby
 class Selection < ActiveRecord::Base
   selectable
 end
 ```
 
+## Selections
+
 Selections table can contain one or many lists, it uses the acts_as_tree so each root is a new list
-meta example: (see below for example YAML file).
+meta example: (see below for example YML file).
 
 * priority
  - high
