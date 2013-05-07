@@ -30,6 +30,15 @@ Or install it yourself as:
 
 ## Usage
 
+### Generator
+
+Scaffold generates basic model, controller views that support the tree adding and editing of selections. Also generates a sample selections.yml file.
+```
+rails generate selections_scaffold
+```
+
+
+### Manual
 First, you need to configure your selection model. We typically use `Selection` for this (although you
 can change the name), and should be generated such as:
 
@@ -227,8 +236,7 @@ Do this as it will be much quicker
 
 # TODO
 
-* Add model generators
-* Add selections management scaffold/generator
+* Suggestions please
 
 ## Contributing
 

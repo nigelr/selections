@@ -1,0 +1,35 @@
+<% if @parent %>
+  <h3>
+     <%= "Children of #{@parent.name}" %>
+  </h3>
+    <%= link_to 'New Selection', new_selection_selection_path(@parent), :class => 'btn create' unless @parent.is_system %>
+<% else %>
+  <h3>
+    Selections
+  </h3>
+<% end %>
+<table class="data table-striped" width="100%">
+  <tr>
+    <th>Name</th>
+    <th>Position value</th>
+    <th>Is default</th>
+    <th>Archived at</th>
+    <th>System code</th>
+  </tr>
+  <% if @selections.size == 0 %>
+    <tr class="no-records">
+      <td colspan="6"><p>No records to display.</p></td>
+    </tr>
+  <% end %>
+  <% @selections.each do |selection| %>
+  <tr>
+    <td><%= selector selection %></td>
+    <td><%= selection.position_value %></td>
+    <td><%= selection.is_default %></td>
+    <td><%= selection.archived_at %></td>
+    <td><%= selection.system_code %></td>
+  </tr>
+<% end %>
+</table>
+
+

@@ -1,0 +1,17 @@
+example:
+  name: Example
+  is_system: false
+  system_code: $LABEL
+example_one:
+  name: One
+  parent: example
+  position_value:
+  is_default: true
+  system_code: $LABEL
+example_two:
+  name: Two
+  parent: example
+  position_value:
+  is_default: false
+  system_code: $LABEL
+

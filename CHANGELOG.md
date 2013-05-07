@@ -1,3 +1,6 @@
+## 0.1.13
+
+* https://github.com/nigelr/selections/issues/4 - selections-4 create selection Management scaffold generator
 ## 0.1.12
 
 * https://github.com/nigelr/selections/issues/6 - #label_to_id feature to allow quick ID lookups within factories (speed enhancement)
