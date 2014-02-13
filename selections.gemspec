@@ -34,5 +34,5 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'rspec'
   gem.add_development_dependency 'sqlite3'
   gem.add_development_dependency 'nokogiri'
-
+  gem.add_development_dependency "shoulda-matchers", "~> 2.4.0"
 end
