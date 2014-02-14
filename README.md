@@ -10,6 +10,7 @@ Selection list management and form and view helpers.
  - f.selections :priorities # dropdowns
  - f.radios :priorities # radio buttons
 * Model helpers for joining tables ( eg. belongs_to_selection :priority )
+* Matchers eg. @ticket.priority_high?
 * Handling of archived items ( displaying if selected only )
 * Ordering of lists based on alpha or numbered
 * Default item handling
@@ -177,6 +178,20 @@ eg: show.html.erb
   <%= @ticket.priority %>  # Instead of this @ticket.priority.try(:name)
 </p>
 ```
+
+## Matchers
+
+Selections supports lookup using the boolean ? method, as an example:
+
+instead of needing to do
+```ruby
+  if @ticket.priority == Selection.ticket_priority_high
+```
+you can check directly on the instance:
+```ruby
+  if @ticket.priority_high?
+```
+Thanks to @mattconnolly
 
 ## Automatic Features
 #### Include Blank
