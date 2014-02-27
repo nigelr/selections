@@ -1,3 +1,6 @@
+## 0.1.14
+* https://github.com/nigelr/selections/issues/7 - add selection items as booleans method names to attached model
+
 ## 0.1.13
 
 * https://github.com/nigelr/selections/issues/4 - selections-4 create selection Management scaffold generator
