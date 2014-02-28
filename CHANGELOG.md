@@ -1,8 +1,8 @@
-## to be released
+## 0.2.1
 
 * Check the existence of the selections table in `belongs_to_selection` so it is safe to use during rake tasks like db:reset.
 
-## 0.1.14
+## 0.1.14 (should of been 0.2.0)
 * https://github.com/nigelr/selections/issues/7 - add selection items as booleans method names to attached model
 
 ## 0.1.13
