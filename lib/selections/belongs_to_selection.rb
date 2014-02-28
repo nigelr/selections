@@ -26,15 +26,18 @@ module Selections
     def belongs_to_selection(target, options={})
       belongs_to target, options.merge(:class_name => "Selection")
 
-      prefix = self.name.downcase
-      parent = Selection.where(system_code: "#{prefix}_#{target}").first
-      if parent
-        target_id = "#{target}_id".to_sym
-        parent.children.each do |s|
-          method_name = "#{s.system_code.sub("#{prefix}_", '')}?".to_sym
-          class_eval do
-            define_method method_name do
-              send(target_id) == s.id
+      # The "selections" table may not exist during certain rake scenarios such as db:migrate or db:reset.
+      if ActiveRecord::Base.connection.table_exists? Selection.table_name
+        prefix = self.name.downcase
+        parent = Selection.where(system_code: "#{prefix}_#{target}").first
+        if parent
+          target_id = "#{target}_id".to_sym
+          parent.children.each do |s|
+            method_name = "#{s.system_code.sub("#{prefix}_", '')}?".to_sym
+            class_eval do
+              define_method method_name do
+                send(target_id) == s.id
+              end
             end
           end
         end
