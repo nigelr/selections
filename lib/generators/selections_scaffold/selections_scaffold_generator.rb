@@ -29,7 +29,7 @@ class SelectionsScaffoldGenerator < Rails::Generators::Base
 
     migration_template 'create_selections.rb', 'db/migrate/create_selections.rb'
 
-    route 'resources(:selections, :only => :index) { resources :selections, except: :show }'
+    route 'resources(:selections, only: :index) { resources :selections, except: :show }'
 
   end
 end

@@ -120,7 +120,7 @@ The selections method excepts all the standard Ruby on Rails form helper options
 If you have a selection named differently to the foreign key eg. the foreign key is variety_id, you can use a system_code option.
 
 ```ruby
-<%= f.selections :variety, :system_code => :category %>
+<%= f.selections :variety, system_code: :category %>
 ```
 
 ### Radio Buttons Options
@@ -199,7 +199,7 @@ Thanks to @mattconnolly
 In a new form the selections list will have blank top row unless a default item is set in the selections eg. Medium Priority, then there
 will be no blank row and the default item will be selected.
 
-When editing a form, by default the blank row will not be displayed. Use the options :include_blank => true option to overrided.
+When editing a form, by default the blank row will not be displayed. Use the options include_blank: true option to override.
 
 #### Archived Item
 
