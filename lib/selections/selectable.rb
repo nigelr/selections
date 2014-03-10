@@ -12,14 +12,14 @@ module Selections
         # Setup any required model information for a selectable model.
         acts_as_tree
 
-        validate :name, :existence => true
+        validate :name, existence: true
         validates_presence_of :name
-        validates_uniqueness_of :name, :scope => :parent_id
-        validates_uniqueness_of :system_code, :scope => :archived_at
+        validates_uniqueness_of :name, scope: :parent_id
+        validates_uniqueness_of :system_code, scope: :archived_at
         validates_format_of :system_code, :with => /^[a-z][a-zA-Z_0-9]*$/, :message => "can only contain alphanumeric characters and '_', not spaces"
 
-        before_validation :auto_gen_system_code, :on => :create
-        before_validation :disable_system_code_change, :on => :update
+        before_validation :auto_gen_system_code, on: :create
+        before_validation :disable_system_code_change, on: :update
         after_validation :check_defaults
 
         default_scope :order => [:position_value, :name]
@@ -43,9 +43,9 @@ module Selections
         # Selection.priorities => returns [high, medium, low] instances (children)
 
         def method_missing lookup_code, *options
-          if (scope = where(:system_code => lookup_code.to_s)).exists?
+          if (scope = where(system_code: lookup_code.to_s)).exists?
             scope.first
-          elsif (scope = where(:system_code => lookup_code.to_s.singularize)).exists?
+          elsif (scope = where(system_code: lookup_code.to_s.singularize)).exists?
             scope.first.children
           else
             super
@@ -118,7 +118,7 @@ module Selections
       end
 
       def siblings_with_default_set #:nodoc:
-        self.parent.children.where(:is_default => true).where("id != ?", self.id.to_i).first
+        self.parent.children.where(is_default: true).where("id != ?", self.id.to_i).first
       end
 
       def archived #:nodoc:

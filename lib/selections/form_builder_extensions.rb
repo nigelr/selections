@@ -105,7 +105,7 @@ module Selections
       end
 
       def default_item
-        items.where(:is_default => true).first.try(:id).to_s
+        items.where(is_default: true).first.try(:id).to_s
       end
 
       def blank_content
