@@ -16,15 +16,15 @@ module Selections
         validates_presence_of :name
         validates_uniqueness_of :name, scope: :parent_id
         validates_uniqueness_of :system_code, scope: :archived_at
-        validates_format_of :system_code, :with => /^[a-z][a-zA-Z_0-9]*$/, :message => "can only contain alphanumeric characters and '_', not spaces"
+        validates_format_of :system_code, :with => /\A[a-z][a-zA-Z_0-9]*\Z/, :message => "can only contain alphanumeric characters and '_', not spaces"
 
         before_validation :auto_gen_system_code, on: :create
         before_validation :disable_system_code_change, on: :update
         after_validation :check_defaults
 
-        default_scope :order => [:position_value, :name]
+        default_scope { order([:position_value, :name]) }
 
-        scope :filter_archived_except_selected, lambda { |selected_id| {:conditions => ["archived_at is ? or id = ?", nil, selected_id.to_i]} }
+        scope :filter_archived_except_selected, lambda { |selected_id| where(["archived_at is ? or id = ?", nil, selected_id.to_i]) }
       end
 
       module ClassMethods
@@ -73,7 +73,13 @@ module Selections
         # priority_id: { Selection.label_to_id(:priority_high) }    <== This will be much quicker
         #
         def label_to_id(label)
-          ActiveRecord::Fixtures.identify(label)
+          # ActiveRecord::FixtureSet replaces ActiveRecord::Fixtures in Rails 4
+          # This helps to ensure backwards compatibility
+          if ActiveRecord::VERSION::MAJOR >= 4
+            ActiveRecord::FixtureSet.identify(label)
+          else
+            ActiveRecord::Fixtures.identify(label)
+          end
         end
       end
 

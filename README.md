@@ -184,13 +184,17 @@ eg: show.html.erb
 Selections supports lookup using the boolean ? method, as an example:
 
 instead of needing to do
+
 ```ruby
   if @ticket.priority == Selection.ticket_priority_high
 ```
+
 you can check directly on the instance:
+
 ```ruby
   if @ticket.priority_high?
 ```
+
 Thanks to @mattconnolly
 
 ## Automatic Features
@@ -235,15 +239,15 @@ priority_high:
    name: Priorities
    system_code: priority_high
    parent: priority
-```   
+```
 ### In Factory
 Don't do this as it will need a DB lookup
 ```ruby
-  priority: { Selection.priority_high }     
+  priority: { Selection.priority_high }
 ```
 Do this as it will be much quicker
 ```ruby
- priority_id: { Selection.label_to_id(:priority_high) }    
+ priority_id: { Selection.label_to_id(:priority_high) }
 ```
 
 

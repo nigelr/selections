@@ -26,7 +26,13 @@ describe SelectionTag do
   let(:selection_1) { Selection.create(name: "low", parent_id: parent.id) }
   let(:selection_2) { Selection.create(name: "medium", parent_id: parent.id) }
   let(:selection_3) { Selection.create(name: "high", parent_id: parent.id) }
-  let(:form) { ActionView::Helpers::FormBuilder.new(:ticket, ticket, ActionView::Base.new, {}, Proc.new {}) }
+  if ActiveRecord::VERSION::MAJOR >= 4
+    let(:form) { ActionView::Helpers::FormBuilder.new(:ticket, ticket, ActionView::Base.new, {}) }
+    let(:form_user) { ActionView::Helpers::FormBuilder.new(:user, :user, ActionView::Base.new, {}) }
+  else
+    let(:form) { ActionView::Helpers::FormBuilder.new(:ticket, ticket, ActionView::Base.new, {}, Proc.new {}) }
+    let(:form_user) { ActionView::Helpers::FormBuilder.new(:user, :user, ActionView::Base.new, {}, Proc.new {}) }
+  end
   let(:ticket) { Ticket.create(:name => "railscamp") }
   let(:all_selections) do
     parent
@@ -45,7 +51,7 @@ describe SelectionTag do
         before { model_parent }
         it("should find more explicit route of model parent") { expect(edit_form.system_code).to eq(model_parent) }
         it "should use priority system_code when model is not ticket" do
-          expect(edit_form(form: ActionView::Helpers::FormBuilder.new(:user, :user, ActionView::Base.new, {}, Proc.new {})).system_code).to eq(parent)
+          expect(edit_form(form: form_user ).system_code).to eq(parent)
         end
       end
     end
@@ -68,7 +74,7 @@ describe SelectionTag do
     before { all_selections }
 
     it "returns all children items" do
-      expect(edit_form.items.all).to eq(parent.children)
+      expect(edit_form.items.to_a).to eq(parent.children)
     end
     context "archived" do
       before { selection_2.update_attribute(:archived, "1") }
@@ -77,7 +83,7 @@ describe SelectionTag do
       end
       it "returns archived items when selected" do
         ticket.update_attribute(:priority_id, selection_2.id)
-        expect(edit_form.items.all).to eq(parent.children)
+        expect(edit_form.items.to_a).to eq(parent.children)
       end
     end
   end
