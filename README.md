@@ -29,6 +29,10 @@ Or install it yourself as:
 
     $ gem install selections
 
+Add this line to `config/boot.rb` under
+
+    ENV["FIXTURES_PATH"] ||= 'spec/fixtures'
+
 ## Usage
 
 ### Generator
