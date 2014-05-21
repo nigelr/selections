@@ -26,6 +26,7 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ["lib"]
 
+  gem.add_dependency('activerecord', ">= 3.0")
   gem.add_dependency('activesupport', ">= 3.0")
   gem.add_dependency('actionpack', ">= 3.0")
   gem.add_dependency 'acts_as_tree', '~> 1.6.0'
@@ -35,5 +36,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'appraisal'
   gem.add_development_dependency 'sqlite3'
   gem.add_development_dependency 'nokogiri'
+  gem.add_development_dependency 'generator_spec'
+  gem.add_development_dependency 'minitest'
   gem.add_development_dependency 'shoulda-matchers', ">= 2.4.0"
 end
