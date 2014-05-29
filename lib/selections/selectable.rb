@@ -142,6 +142,12 @@ module Selections
       def sub_children
         children.flat_map(&:children)
       end
+
+      # returns first default item in list e.g. Selection.priorities.default
+      def default
+        children.where(:is_default => true).order(:position_value).first
+      end
+
     end
 
     def selectable #:nodoc:
