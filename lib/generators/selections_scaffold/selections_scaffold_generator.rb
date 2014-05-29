@@ -14,7 +14,6 @@ class SelectionsScaffoldGenerator < Rails::Generators::Base
   def generate_selections_scaffold
     {
         'selection_spec.rb' => 'spec/models/',
-        'selection.rb' => 'app/models/',
         'selections_controller_spec.rb' => 'spec/controllers/',
         'selections_controller.rb' => 'app/controllers/',
         'selections_helper.rb' => 'app/helpers/',
@@ -27,9 +26,16 @@ class SelectionsScaffoldGenerator < Rails::Generators::Base
       copy_file file, dir + file
     end
 
+    model_source =
+        if ActiveRecord::VERSION::MAJOR >= 4
+          'selection.rb'
+        else
+          'selection_rails3.rb'
+        end
+    copy_file model_source, 'app/models/selection.rb'
+
     migration_template 'create_selections.rb', 'db/migrate/create_selections.rb'
 
     route 'resources(:selections, only: :index) { resources :selections, except: :show }'
-
   end
 end
