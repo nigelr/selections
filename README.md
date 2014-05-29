@@ -29,7 +29,7 @@ Or install it yourself as:
 
     $ gem install selections
 
-Add this line to `config/boot.rb` under
+Add this line to `config/boot.rb` under `require 'bundler/setup' ...` if using Rspec in your project
 
     ENV["FIXTURES_PATH"] ||= 'spec/fixtures'
 
