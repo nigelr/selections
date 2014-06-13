@@ -1,5 +1,11 @@
-## 0.2.1
+## 1.0.0
+* https://github.com/nigelr/selections/pull/14 - Update selections to no longer use hash rocket syntax.
+* https://github.com/nigelr/selections/pull/17 - Add rails 4 support, include appraisals gem and travis
+* https://github.com/nigelr/selections/pull/18 - Update readme to provide instructions on boot.rb 
+* https://github.com/nigelr/selections/pull/19 - Update generators for Rails 3 or 4
+* https://github.com/nigelr/selections/pull/20 - Return first default item in a group #13 
 
+## 0.2.1
 * Check the existence of the selections table in `belongs_to_selection` so it is safe to use during rake tasks like db:reset.
 
 ## 0.1.14 (should of been 0.2.0)
