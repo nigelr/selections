@@ -38,7 +38,7 @@ describe Selections::BelongsToSelection do
     subject { ticket_class.new }
     %w{low medium high}.each do |p|
       it "creates the method #priority_#{p}?" do
-        expect(subject.respond_to? "priority_#{p}?".to_sym).to be_true
+        expect(subject.respond_to? "priority_#{p}?".to_sym).to be_truthy
       end
     end
 
@@ -46,13 +46,13 @@ describe Selections::BelongsToSelection do
       before { subject.priority = selection_3 }
 
       it("#priority_high? is true") do
-        expect(subject.priority_high?).to be_true
+        expect(subject.priority_high?).to be_truthy
       end
       it("#priority_medium? is false") do
-        expect(subject.priority_medium?).to be_false
+        expect(subject.priority_medium?).to be_falsey
       end
       it("#priority_low? is false") do
-        expect(subject.priority_low?).to be_false
+        expect(subject.priority_low?).to be_falsey
       end
     end
 

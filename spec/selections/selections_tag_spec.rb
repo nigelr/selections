@@ -103,63 +103,63 @@ describe SelectionTag do
 
     context "when not set" do
       context "new form" do
-        it("has blank") { expect(new_form.include_blank?).to be_true }
+        it("has blank") { expect(new_form.include_blank?).to be_truthy }
         it "has no blank when default set" do
           selection_1.update_attribute(:is_default, true)
-          expect(new_form.include_blank?).to be_false
+          expect(new_form.include_blank?).to be_falsey
         end
       end
       context "edit form" do
         it("has no blank when ticket.priority_id is set") do
           ticket.update_attribute(:priority_id, selection_3.id)
-          expect(edit_form.include_blank?).to be_false
+          expect(edit_form.include_blank?).to be_falsey
         end
-        it("has blank when ticket.priority_id is nil") { expect(edit_form.include_blank?).to be_true }
+        it("has blank when ticket.priority_id is nil") { expect(edit_form.include_blank?).to be_truthy }
         it "has no blank when ticket.priority_id is nil and default set" do
           selection_1.update_attribute(:is_default, true)
-          expect(edit_form.include_blank?).to be_false
+          expect(edit_form.include_blank?).to be_falsey
         end
       end
     end
 
     context "when set false" do
       context "new form" do
-        it("has no blank") { expect(new_form(options: {include_blank: false}).include_blank?).to be_false }
+        it("has no blank") { expect(new_form(options: {include_blank: false}).include_blank?).to be_falsey }
         it "has no blank when default set" do
           selection_1.update_attribute(:is_default, true)
-          expect(new_form(options: {include_blank: false}).include_blank?).to be_false
+          expect(new_form(options: {include_blank: false}).include_blank?).to be_falsey
         end
       end
       context "edit form" do
         it("has no blank when ticket.priority_id is set") do
           ticket.update_attribute(:priority_id, selection_3.id)
-          expect(edit_form(options: {include_blank: false}).include_blank?).to be_false
+          expect(edit_form(options: {include_blank: false}).include_blank?).to be_falsey
         end
-        it("has no blank even when ticket.priority_id is nil") { expect(edit_form(options: {include_blank: false}).include_blank?).to be_false }
+        it("has no blank even when ticket.priority_id is nil") { expect(edit_form(options: {include_blank: false}).include_blank?).to be_falsey }
         it "has no blank when ticket.priority_id is nil and default set" do
           selection_1.update_attribute(:is_default, true)
-          expect(edit_form(options: {include_blank: false}).include_blank?).to be_false
+          expect(edit_form(options: {include_blank: false}).include_blank?).to be_falsey
         end
       end
     end
 
     context "when set to true" do
       context "new form" do
-        it("has blank") { expect(new_form(options: {include_blank: true}).include_blank?).to be_true }
+        it("has blank") { expect(new_form(options: {include_blank: true}).include_blank?).to be_truthy }
         it "has blank even when default set" do
           selection_1.update_attribute(:is_default, true)
-          expect(new_form(options: {include_blank: true}).include_blank?).to be_true
+          expect(new_form(options: {include_blank: true}).include_blank?).to be_truthy
         end
       end
       context "edit form" do
         it("has blank even when ticket.priority_id is set") do
           ticket.update_attribute(:priority_id, selection_3.id)
-          expect(edit_form(options: {include_blank: true}).include_blank?).to be_true
+          expect(edit_form(options: {include_blank: true}).include_blank?).to be_truthy
         end
-        it("has blank even when ticket.priority_id is nil") { expect(edit_form(options: {include_blank: true}).include_blank?).to be_true }
+        it("has blank even when ticket.priority_id is nil") { expect(edit_form(options: {include_blank: true}).include_blank?).to be_truthy }
         it "has blank even when ticket.priority_id is nil and default set" do
           selection_1.update_attribute(:is_default, true)
-          expect(edit_form(options: {include_blank: true}).include_blank?).to be_true
+          expect(edit_form(options: {include_blank: true}).include_blank?).to be_truthy
         end
       end
     end

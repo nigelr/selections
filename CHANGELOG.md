@@ -1,3 +1,6 @@
+## 1.0.1
+* lock test to rspec ~> 2.99
+
 ## 1.0.0
 * https://github.com/nigelr/selections/pull/14 - Update selections to no longer use hash rocket syntax.
 * https://github.com/nigelr/selections/pull/17 - Add rails 4 support, include appraisals gem and travis

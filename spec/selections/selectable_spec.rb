@@ -53,8 +53,8 @@ describe Selections do
   end
 
   describe ".leaf?" do
-    it { selection_1; expect(parent.leaf?).to be_false }
-    it { expect(selection_1.leaf?).to be_true }
+    it { selection_1; expect(parent.leaf?).to be_falsey }
+    it { expect(selection_1.leaf?).to be_truthy }
   end
 
   describe ".sub_children" do
@@ -144,38 +144,38 @@ describe Selections do
       selection_2
       selection_3
     end
-    it("selection_1 should not be set") { expect(selection_1.reload.is_default).to be_false }
-    it("selection_2 should not be set") { expect(selection_2.reload.is_default).to be_false }
-    it("selection_3 should not be set") { expect(selection_3.reload.is_default).to be_false }
+    it("selection_1 should not be set") { expect(selection_1.reload.is_default).to be_falsey }
+    it("selection_2 should not be set") { expect(selection_2.reload.is_default).to be_falsey }
+    it("selection_3 should not be set") { expect(selection_3.reload.is_default).to be_falsey }
 
     context "setting one item to default" do
       before { selection_2.update_attributes(is_default: true) }
-      it("should set self as default") { expect(selection_2.reload.is_default).to be_true }
-      it("selection_1 should not be set") { expect(selection_1.reload.is_default).to be_false }
-      it("selection_3 should not be set") { expect(selection_3.reload.is_default).to be_false }
+      it("should set self as default") { expect(selection_2.reload.is_default).to be_truthy }
+      it("selection_1 should not be set") { expect(selection_1.reload.is_default).to be_falsey }
+      it("selection_3 should not be set") { expect(selection_3.reload.is_default).to be_falsey }
       context "setting same item to default" do
         before { selection_2.update_attributes(is_default: true) }
-        it("should set self as default") { expect(selection_2.reload.is_default).to be_true }
-        it("selection_1 should not be set") { expect(selection_1.reload.is_default).to be_false }
-        it("selection_3 should not be set") { expect(selection_3.reload.is_default).to be_false }
+        it("should set self as default") { expect(selection_2.reload.is_default).to be_truthy }
+        it("selection_1 should not be set") { expect(selection_1.reload.is_default).to be_falsey }
+        it("selection_3 should not be set") { expect(selection_3.reload.is_default).to be_falsey }
       end
       context "setting other item to default" do
         before { selection_1.update_attributes(is_default: true) }
-        it("should set self as default") { expect(selection_1.reload.is_default).to be_true }
-        it("selection_2 should not be set") { expect(selection_2.reload.is_default).to be_false }
-        it("selection_3 should not be set") { expect(selection_3.reload.is_default).to be_false }
+        it("should set self as default") { expect(selection_1.reload.is_default).to be_truthy }
+        it("selection_2 should not be set") { expect(selection_2.reload.is_default).to be_falsey }
+        it("selection_3 should not be set") { expect(selection_3.reload.is_default).to be_falsey }
       end
       context "removing default setting" do
         before { selection_2.update_attributes(is_default: false) }
-        it("should unset self as default") { expect(selection_1.reload.is_default).to be_false }
-        it("selection_2 should not be set") { expect(selection_2.reload.is_default).to be_false }
-        it("selection_3 should not be set") { expect(selection_3.reload.is_default).to be_false }
+        it("should unset self as default") { expect(selection_1.reload.is_default).to be_falsey }
+        it("selection_2 should not be set") { expect(selection_2.reload.is_default).to be_falsey }
+        it("selection_3 should not be set") { expect(selection_3.reload.is_default).to be_falsey }
       end
       context "archive item with default" do
         before { selection_2.update_attributes(archived: "1") }
-        it("should unset self as default") { expect(selection_2.reload.is_default).to be_false }
-        it("selection_1 should not be set") { expect(selection_1.reload.is_default).to be_false }
-        it("selection_3 should not be set") { expect(selection_3.reload.is_default).to be_false }
+        it("should unset self as default") { expect(selection_2.reload.is_default).to be_falsey }
+        it("selection_1 should not be set") { expect(selection_1.reload.is_default).to be_falsey }
+        it("selection_3 should not be set") { expect(selection_3.reload.is_default).to be_falsey }
       end
     end
   end
@@ -204,11 +204,11 @@ describe Selections do
   describe ".archived" do
     it "when archived set" do
       selection_1.update_attributes(archived: "1")
-      expect(selection_1.archived).to be_true
+      expect(selection_1.archived).to be_truthy
     end
     it "when archived set" do
       selection_1.update_attributes(archived: "0")
-      expect(selection_1.archived).to be_false
+      expect(selection_1.archived).to be_falsey
     end
   end
 
