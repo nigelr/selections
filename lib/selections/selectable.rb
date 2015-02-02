@@ -12,7 +12,6 @@ module Selections
         # Setup any required model information for a selectable model.
         acts_as_tree
 
-        validate :name, :existence => true
         validates_presence_of :name
         validates_uniqueness_of :name, :scope => :parent_id
         validates_uniqueness_of :system_code, :scope => :archived_at
