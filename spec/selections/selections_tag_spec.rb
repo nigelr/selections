@@ -279,7 +279,7 @@ describe SelectionTag do
           end
         end
         it 'returns valid html' do
-          expect(edit_form.select_tag).to eq "<select id=\"ticket_priority_id\" name=\"ticket[priority_id]\"><option value=\"\"></option>\n<option value=\"4\">high</option>\n<option value=\"2\">low</option>\n<option value=\"3\">medium</option></select>"
+          expect(edit_form.select_tag).to eq "<select name=\"ticket[priority_id]\" id=\"ticket_priority_id\"><option value=\"\"></option>\n<option value=\"4\">high</option>\n<option value=\"2\">low</option>\n<option value=\"3\">medium</option></select>"
         end
       end
     end
@@ -324,7 +324,7 @@ describe SelectionTag do
         end
         it 'returns valid html' do
           ticket.update_attribute(:priority_id, selection_3.id)
-          expect(edit_form(options: {include_blank: true}, html_options: {class: 'fred'}).radio_tag).to eq "<label class=\"fred\" for=\"ticket_priority_id\"><input class=\"fred\" id=\"ticket_priority_id\" name=\"ticket[priority_id]\" type=\"radio\" />none</label><label class=\"fred\" for=\"ticket_priority_id_4\"><input checked=\"checked\" class=\"fred\" id=\"ticket_priority_id_4\" name=\"ticket[priority_id]\" type=\"radio\" value=\"4\" />high</label><label checked=\"checked\" class=\"fred\" for=\"ticket_priority_id_2\"><input class=\"fred\" id=\"ticket_priority_id_2\" name=\"ticket[priority_id]\" type=\"radio\" value=\"2\" />low</label><label class=\"fred\" for=\"ticket_priority_id_3\"><input class=\"fred\" id=\"ticket_priority_id_3\" name=\"ticket[priority_id]\" type=\"radio\" value=\"3\" />medium</label>"
+          expect(edit_form(options: {include_blank: true}, html_options: {class: 'fred'}).radio_tag).to eq "<label class=\"fred\" for=\"ticket_priority_id\"><input class=\"fred\" type=\"radio\" name=\"ticket[priority_id]\" id=\"ticket_priority_id\" />none</label><label class=\"fred\" for=\"ticket_priority_id_4\"><input class=\"fred\" type=\"radio\" value=\"4\" checked=\"checked\" name=\"ticket[priority_id]\" id=\"ticket_priority_id_4\" />high</label><label class=\"fred\" checked=\"checked\" for=\"ticket_priority_id_2\"><input class=\"fred\" type=\"radio\" value=\"2\" name=\"ticket[priority_id]\" id=\"ticket_priority_id_2\" />low</label><label class=\"fred\" for=\"ticket_priority_id_3\"><input class=\"fred\" type=\"radio\" value=\"3\" name=\"ticket[priority_id]\" id=\"ticket_priority_id_3\" />medium</label>"
         end
       end
     end

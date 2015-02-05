@@ -191,7 +191,7 @@ describe Selections do
       expect(selection_1.archived_at).to eq @stubbed_time
     end
     it "remain archived and not change date when set again" do
-      Time.stub(:now).and_return(Time.parse("12/12/2012 10:00"))
+      allow(Time).to receive(:now).and_return(Time.parse("12/12/2012 10:00"))
       selection_1.update_attributes(archived: "1")
       expect(selection_1.archived_at).to eq @stubbed_time
     end
