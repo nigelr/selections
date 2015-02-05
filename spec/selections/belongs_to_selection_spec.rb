@@ -58,10 +58,10 @@ describe Selections::BelongsToSelection do
 
     context 'with no matching selections' do
       it "does not create any methods" do
-        expect(ticket_class).not_to receive(:define_method).with { |x|
-          # the relationship will define this method, but there should be no others.
-          x != :autosave_associated_records_for_wrong
-        }
+        # ensure only the method we expect is called
+        expect(ticket_class).to receive(:define_method).with(:autosave_associated_records_for_wrong)
+        # Test it doesnt reach define method stage
+        expect_any_instance_of(Selection).not_to receive(:children)
         ticket_class.belongs_to_selection :wrong
       end
     end
