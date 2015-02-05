@@ -1,0 +1,26 @@
+- if @parent
+  %h3
+    = "Children of #{@parent.name}"
+    = link_to ' (Back)', selections_path
+  = link_to 'New Selection', new_selection_selection_path(@parent), :class => 'btn create' unless @parent.is_system
+- else
+  %h3
+    Selections
+%table.data.table-striped{:width => "100%"}
+  %tr
+    %th Name
+    %th Position value
+    %th Is default
+    %th Archived at
+    %th System code
+  - if @selections.size == 0
+    %tr.no-records
+      %td{:colspan => "6"}
+        %p No records to display.
+  - @selections.each do |selection|
+    %tr
+      %td= selector selection
+      %td= selection.position_value
+      %td= selection.is_default
+      %td= selection.archived_at
+      %td= selection.system_code

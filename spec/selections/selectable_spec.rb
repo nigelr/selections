@@ -40,6 +40,17 @@ describe Selections do
     end
   end
 
+  describe '#label_to_id' do
+    context 'returns ID without DB access' do
+      if ActiveRecord::VERSION::MAJOR >= 4
+        it { expect(Selection.label_to_id('priority_high')).to eq ActiveRecord::FixtureSet.identify(:priority_high) }
+        it { expect(Selection.label_to_id(:priority_high)).to eq ActiveRecord::FixtureSet.identify(:priority_high) }
+      else
+        it { expect(Selection.label_to_id('priority_high')).to eq ActiveRecord::Fixtures.identify(:priority_high) }
+        it { expect(Selection.label_to_id(:priority_high)).to eq ActiveRecord::Fixtures.identify(:priority_high) }
+      end
+    end
+  end
 
   describe ".leaf?" do
     it { selection_1; expect(parent.leaf?).to be_falsey }
@@ -198,6 +209,26 @@ describe Selections do
     it "when archived set" do
       selection_1.update_attributes(archived: "0")
       expect(selection_1.archived).to be_falsey
+    end
+  end
+
+  describe "#default" do
+    context "returns default selection from list" do
+      before do
+        parent; selection_1; selection_2; selection_3;
+        selection_2.update_attribute(:is_default, true)
+      end
+      it { expect(Selection.priority.default).to eq(selection_2) }
+    end
+    context "returns nil if no children" do
+      before { parent }
+      it { expect(Selection.priority.default).to eq(nil) }
+    end
+    context "returns nil if none set as default" do
+      before do
+        parent; selection_1; selection_2; selection_3;
+      end
+      it { expect(Selection.priority.default).to eq(nil) }
     end
   end
 

@@ -1,13 +1,16 @@
-# Selections
+# Selections [![Gem Version](https://badge.fury.io/rb/selections.png)](http://badge.fury.io/rb/selections)
 
 Selection list management and form and view helpers.
 
 ##Key Features
 
-* Manages one table to hold all selections items/ dropdown lists ( tree )
+* Manages one table to hold all selections items/dropdown lists or Radio Buttons ( tree )
 * Dynamic lookup to find parent or children ( eg. Selection.priorities )
-* Form helper to display lists ( eg. f.selections :priorities )
+* Form helper to display lists
+ - f.selections :priorities # dropdowns
+ - f.radios :priorities # radio buttons
 * Model helpers for joining tables ( eg. belongs_to_selection :priority )
+* Matchers eg. @ticket.priority_high?
 * Handling of archived items ( displaying if selected only )
 * Ordering of lists based on alpha or numbered
 * Default item handling
@@ -26,26 +29,37 @@ Or install it yourself as:
 
     $ gem install selections
 
+Add this line to `config/boot.rb` under `require 'bundler/setup' ...` if using Rspec in your project
+
+    ENV["FIXTURES_PATH"] ||= 'spec/fixtures'
+
 ## Usage
 
+### Generator
+
+Scaffold generates basic model, controller views that support the tree adding and editing of selections. Also generates a sample selections.yml file.
+```
+rails generate selections_scaffold
+```
+
+
+### Manual
 First, you need to configure your selection model. We typically use `Selection` for this (although you
 can change the name), and should be generated such as:
 
 ```ruby
 rails generate model Selection name parent_id:integer system_code position_value:integer is_default:boolean is_system:boolean archived_at:datetime
-```
 
-### Selection Model 
-And next, edit this class to look like:
 
-```ruby
 class Selection < ActiveRecord::Base
   selectable
 end
 ```
 
+## Selections
+
 Selections table can contain one or many lists, it uses the acts_as_tree so each root is a new list
-meta example: (see below for example YAML file).
+meta example: (see below for example YML file).
 
 * priority
  - high
@@ -69,9 +83,9 @@ Dynamic lookups support pluralization and will then return the children:
 Selection.priorities  -> [high,med,low] records
 ```
 
-#### Form Helper
+## Form Helper
 
-if we had a controller for Ticket model with fields of:
+If we had a controller for Ticket model with fields of:
 
 * name
 * priority_id
@@ -97,7 +111,7 @@ within the _form.html.erb just use the selections helper method:
 <% end %>
 ```
 
-### Form Helper Options
+### Selection List Options
 
 ```ruby
   f.selections :fieldname, options = {}, html_options = {}
@@ -110,8 +124,16 @@ The selections method excepts all the standard Ruby on Rails form helper options
 If you have a selection named differently to the foreign key eg. the foreign key is variety_id, you can use a system_code option.
 
 ```ruby
-<%= f.selections :variety, :system_code => :category %>
+<%= f.selections :variety, system_code: :category %>
 ```
+
+### Radio Buttons Options
+
+```ruby
+  f.radios :ticket, options = {}
+```
+
+The radios method excepts all the standard Ruby on Rails form helper options and html formatting - http://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html#method-i-radio_button
 
 ### Scoped System Code
 
@@ -161,13 +183,31 @@ eg: show.html.erb
 </p>
 ```
 
+## Matchers
+
+Selections supports lookup using the boolean ? method, as an example:
+
+instead of needing to do
+
+```ruby
+  if @ticket.priority == Selection.ticket_priority_high
+```
+
+you can check directly on the instance:
+
+```ruby
+  if @ticket.priority_high?
+```
+
+Thanks to @mattconnolly
+
 ## Automatic Features
 #### Include Blank
 
 In a new form the selections list will have blank top row unless a default item is set in the selections eg. Medium Priority, then there
 will be no blank row and the default item will be selected.
 
-When editing a form, by default the blank row will not be displayed. Use the options :include_blank => true option to overrided.
+When editing a form, by default the blank row will not be displayed. Use the options include_blank: true option to override.
 
 #### Archived Item
 
@@ -192,11 +232,32 @@ tell selections so by adding the following to a new file, `config/initializers/s
 Selections.model { YourSelectionModel }
 ```
 
+## Fast Factories
+### label_to_id
+
+When using fixtures with the label same as the system_code, use this method to return the ID of the of the fixture and use this in Factories instead of using a lookup as it does not need a DB search.
+
+Fixture File
+```yaml
+priority_high:
+   name: Priorities
+   system_code: priority_high
+   parent: priority
+```
+### In Factory
+Don't do this as it will need a DB lookup
+```ruby
+  priority: { Selection.priority_high }
+```
+Do this as it will be much quicker
+```ruby
+ priority_id: { Selection.label_to_id(:priority_high) }
+```
+
+
 # TODO
 
-* Add model generators
-* Add selections management scaffold/generator
-* Add Radio Button support
+* Suggestions please
 
 ## Contributing
 

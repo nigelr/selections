@@ -1,0 +1,36 @@
+= form_for ([@parent, @selection]), html: {class: 'form-horizontal'} do |f|
+  - if @selection.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@selection.errors.count, "error")} prohibited this selection from being saved:"
+      %ul
+        - @selection.errors.full_messages.each do |msg|
+          %li= msg
+
+  .control-group
+    = f.label :name
+    .controls
+      = f.text_field :name
+  .control-group
+    = f.label :parent
+    .controls
+      = link_to @selection.parent, selection_selections_path(@selection.parent)
+  .control-group
+    = f.label :system_code
+    .controls
+      = f.text_field :system_code, :readonly => !@selection.new_record?
+  .control-group
+    = f.label :position_value
+    .controls
+      = f.text_field :position_value
+  .control-group
+    = f.label :is_default
+    .controls
+      = f.check_box :is_default
+  .control-group
+    = f.label :archived
+    .controls
+      = f.check_box :archived
+
+  .form-actions
+    = f.submit 'Save Changes', :class => 'btn-primary'
+    = link_to 'Cancel', selection_selections_path(@parent), :class => 'btn'

@@ -1,5 +1,11 @@
 require 'selections'
 require "nokogiri"
+require 'active_record/fixtures'
+
+if ActiveRecord::VERSION::MAJOR == 3
+  # Rails 3 has some big warning that prints out if this is not there, but this will break Rails 4. :(
+  require 'minitest'
+end
 
 ActiveRecord::Base.establish_connection adapter: "sqlite3", database: ":memory:"
 ActiveRecord::Migration.create_table :selections do |t|
