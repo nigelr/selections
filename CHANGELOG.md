@@ -1,3 +1,7 @@
+## 1.0.2
+* Resolves existence validation issue.
+* updates specs to use be_truthy and be_falsey from be_true and be_false
+
 ## 1.0.1
 * lock test to rspec ~> 2.99
 
