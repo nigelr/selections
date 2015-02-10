@@ -1,3 +1,6 @@
+## 1.0.3
+* Rubocop cleanup
+
 ## 1.0.2
 * Resolves existence validation issue.
 * updates specs to use be_truthy and be_falsey from be_true and be_false

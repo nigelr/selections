@@ -1,5 +1,5 @@
 class SelectionsController < ApplicationController
-  before_filter :parent_finder
+  before_action :parent_finder
 
   def index
     if @parent
@@ -45,6 +45,7 @@ class SelectionsController < ApplicationController
   end
 
   private
+
   def parent_finder
     @parent = Selection.find_by_id(params[:selection_id])
   end
