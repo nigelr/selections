@@ -1,3 +1,6 @@
+## 1.0.4
+* Validation error message update (system code must start with a letter)
+
 ## 1.0.3
 * Rubocop cleanup
 

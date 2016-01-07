@@ -15,7 +15,7 @@ module Selections
         validates_presence_of :name
         validates_uniqueness_of :name, scope: :parent_id
         validates_uniqueness_of :system_code, scope: :archived_at
-        validates_format_of :system_code, :with => /\A[a-z][a-zA-Z_0-9]*\Z/, :message => "can only contain alphanumeric characters and '_', not spaces"
+        validates_format_of :system_code, :with => /\A[a-z][a-zA-Z_0-9]*\Z/, :message => "Must start with a Letter and can only contain alphanumeric characters and '_', no spaces"
 
         before_validation :auto_gen_system_code, on: :create
         before_validation :disable_system_code_change, on: :update
