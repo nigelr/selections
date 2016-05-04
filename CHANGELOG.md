@@ -1,3 +1,6 @@
+## 1.1.1
+* update to 2 version of acts_as_tree
+
 ## 1.0.4
 * Validation error message update (system code must start with a letter)
 

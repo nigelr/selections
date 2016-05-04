@@ -29,7 +29,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency('activerecord', ">= 3.0")
   gem.add_dependency('activesupport', ">= 3.0")
   gem.add_dependency('actionpack', ">= 3.0")
-  gem.add_dependency 'acts_as_tree', '~> 1.6.0'
+  gem.add_dependency 'acts_as_tree', '~> 2.4.0'
 
   gem.add_development_dependency 'rake'
   gem.add_development_dependency 'rspec', '~> 3.2'
