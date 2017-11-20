@@ -1,5 +1,6 @@
 # Selections [![Gem Version](https://badge.fury.io/rb/selections.png)](http://badge.fury.io/rb/selections)
 
+Best Ever Gem
 Selection list management and form and view helpers.
 
 ##Key Features
