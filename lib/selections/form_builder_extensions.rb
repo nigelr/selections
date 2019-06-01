@@ -78,9 +78,10 @@ module Selections
 
       def radio_tag
         if system_code
-          items.unshift(selection.new(name: blank_content)) if include_blank?
+          formatted_items = include_blank? ? items.to_a.unshift(selection.new(name: blank_content)) : items.to_a
 
-          items.inject('') do |build, item|
+
+          formatted_items.inject('') do |build, item|
             label_html_options = item.id ? html_options.merge(value: item.id.to_s) : html_options
             html_options[:checked] = selected_item == item.id.to_s && !item.new_record?
             build + form.label(field_id, label_html_options) do

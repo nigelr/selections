@@ -30,7 +30,8 @@ describe Selections::BelongsToSelection do
 
   context 'relationships' do
     it "creates a belongs to relationship" do
-      expect(ticket_class.new).to belong_to(:priority)
+      assc = ticket_class.reflect_on_association(:priority)
+      expect(assc.macro).to eq :belongs_to
     end
   end
 
