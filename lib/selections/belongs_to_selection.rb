@@ -23,8 +23,12 @@ module Selections
     #
     # Note that this is only appropriate to use for system selection values that are known
     # at development time, and not to values that the users can edit in the live system.
-    def belongs_to_selection(target, options={})
-      belongs_to target, options.merge(:class_name => "Selection")
+    def belongs_to_selection(target, options = {})
+      system_code = options[:system_code]
+      multiple = !!options[:multiple]
+      predicates = !!options[:predicates]
+      scopes = !!options[:scopes]
+      belongs_to target, options.reject { |k, v| k.in?([:system_code, :multiple, :scopes, :predicates]) }.merge(:class_name => "Selection")
 
       # The "selections" table may not exist during certain rake scenarios such as db:migrate or db:reset.
       ActiveRecord::Base.connection_pool.with_connection(&:active?) rescue return
@@ -36,14 +40,34 @@ module Selections
 
       if table_exists
         prefix = self.name.downcase
-        parent = Selection.where(system_code: "#{prefix}_#{target}").first
+        parent = Selection.where(system_code: system_code).first || Selection.where(system_code: "#{prefix}_#{target}").first || Selection.where(system_code: target.to_s).first
         if parent
-          target_id = "#{target}_id".to_sym
+          target_id = multiple ? target.to_sym : "#{target}_id".to_sym
           parent.children.each do |s|
-            method_name = "#{s.system_code.sub("#{prefix}_", '')}?".to_sym
-            class_eval do
-              define_method method_name do
-                send(target_id) == s.id
+            if predicates
+              if system_code
+                method_name = "#{target}_#{s.system_code.to_s.gsub("#{target}_", '')}?".to_sym
+              else
+                method_name = "#{s.system_code.to_s}?".to_sym
+              end
+              class_eval do
+                define_method method_name do
+                  Array(send(target_id)).include?(s.id)
+                end
+              end
+
+              if scopes
+                if system_code
+                  scope_name = "#{target}_#{s.system_code.to_s.gsub("#{target}_", '')}".pluralize.to_sym
+                else
+                  scope_name = "#{s.system_code.to_s}".pluralize.to_sym
+                end
+
+                if ActiveRecord::VERSION::MAJOR >= 4
+                  scope scope_name, -> { where("#{target_id} = ?", s.id) }
+                else
+                  scope(scope_name, where("#{target_id} = ?", s.id))
+                end
               end
             end
           end
