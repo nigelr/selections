@@ -9,6 +9,7 @@ Selection list management and form and view helpers.
 * Form helper to display lists
  - f.selections :priorities # dropdowns
  - f.radios :priorities # radio buttons
+ - f.check_boxes :priorities # check boxes
 * Model helpers for joining tables ( eg. belongs_to_selection :priority )
 * Matchers eg. @ticket.priority_high?
 * Handling of archived items ( displaying if selected only )
@@ -134,6 +135,14 @@ If you have a selection named differently to the foreign key eg. the foreign key
 ```
 
 The radios method excepts all the standard Ruby on Rails form helper options and html formatting - http://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html#method-i-radio_button
+
+### Check Box Options
+
+```ruby
+  f.check_boxes :ticket, options = {}
+```
+
+The check_boxes method check_boxes all the standard Ruby on Rails form helper options and html formatting - https://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html#method-i-check_box
 
 ### Scoped System Code
 

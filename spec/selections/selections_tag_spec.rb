@@ -182,25 +182,25 @@ describe SelectionTag do
     context "when default not set" do
       context "when new form" do
         it 'has no value' do
-          expect(new_form.selected_item).to eq("")
+          expect(new_form.selected_item).to eq([""])
         end
         it 'priority value is already set (simulating a failed validation)' do
-          expect(new_form(object: Ticket.new(priority_id: selection_3.id)).selected_item).to eq(selection_3.id.to_s)
+          expect(new_form(object: Ticket.new(priority_id: selection_3.id)).selected_item).to eq([selection_3.id.to_s])
         end
       end
       context "when edit form" do
         context "ticket.priority_id set" do
           before { ticket.update_attribute(:priority_id, selection_3.id) }
 
-          it { expect(edit_form.selected_item).to eq(selection_3.id.to_s) }
+          it { expect(edit_form.selected_item).to eq([selection_3.id.to_s]) }
           it 'priority value is changed (simulating a failed validation)' do
-            expect(edit_form(object: ticket.assign_attributes(priority_id: selection_2.id)).selected_item).to eq(selection_2.id.to_s)
+            expect(edit_form(object: ticket.assign_attributes(priority_id: selection_2.id)).selected_item).to eq([selection_2.id.to_s])
           end
         end
         context 'no ticket.priority_id set' do
-          it { expect(edit_form.selected_item).to eq("") }
+          it { expect(edit_form.selected_item).to eq([]) }
           it 'priority value is changed (simulating a failed validation)' do
-            expect(edit_form(object: ticket.assign_attributes(priority_id: selection_2.id)).selected_item).to eq(selection_2.id.to_s)
+            expect(edit_form(object: ticket.assign_attributes(priority_id: selection_2.id)).selected_item).to eq([selection_2.id.to_s])
           end
         end
       end
@@ -209,22 +209,22 @@ describe SelectionTag do
       before { selection_2.update_attribute(:is_default, true) }
 
       context 'new form' do
-        it { expect(new_form.selected_item).to eq(selection_2.id.to_s) }
+        it { expect(new_form.selected_item).to eq([selection_2.id.to_s]) }
         it 'priority value is already set (simulating a failed validation)' do
-          expect(new_form(object: Ticket.new(priority_id: selection_3.id)).selected_item).to eq(selection_3.id.to_s)
+          expect(new_form(object: Ticket.new(priority_id: selection_3.id)).selected_item).to eq([selection_3.id.to_s])
         end
       end
 
       context 'edit form' do
-        it('has no ticket.priority_id set') { expect(edit_form.selected_item).to eq("") }
+        it('has no ticket.priority_id set') { expect(edit_form.selected_item).to eq([]) }
         context 'has ticket.priority_id set' do
           before { ticket.update_attribute(:priority_id, selection_3.id) }
 
           it 'should not change' do
-            expect(edit_form.selected_item).to eq(selection_3.id.to_s)
+            expect(edit_form.selected_item).to eq([selection_3.id.to_s])
           end
           it 'priority value is changed (simulating a failed validation)' do
-            expect(edit_form(object: ticket.assign_attributes(priority_id: selection_2.id)).selected_item).to eq(selection_2.id.to_s)
+            expect(edit_form(object: ticket.assign_attributes(priority_id: selection_2.id)).selected_item).to eq([selection_2.id.to_s])
           end
         end
       end
@@ -279,7 +279,7 @@ describe SelectionTag do
           end
         end
         it 'returns valid html' do
-          expect(edit_form.select_tag).to eq "<select id=\"ticket_priority_id\" name=\"ticket[priority_id]\"><option value=\"\"></option>\n<option value=\"4\">high</option>\n<option value=\"2\">low</option>\n<option value=\"3\">medium</option></select>"
+          expect(edit_form.select_tag).to eq "<select class=\" selection select\" id=\"ticket_priority_id\" name=\"ticket[priority_id]\"><option value=\"\"></option>\n<option value=\"4\">high</option>\n<option value=\"2\">low</option>\n<option value=\"3\">medium</option></select>"
         end
       end
     end
@@ -298,33 +298,67 @@ describe SelectionTag do
         context 'new form' do
           context 'no default' do
             it('has no selected item') { expect(Nokogiri::HTML(new_form.radio_tag).search('input[checked]')).to be_empty }
-            it('has a blank option') { expect(Nokogiri::HTML(new_form.radio_tag).search('label').first.content).to eq('none') }
-            it('has a custom blank option') { expect(Nokogiri::HTML(new_form(options: {blank_content: 'hello'}).radio_tag).search('label').first.content).to eq('hello') }
           end
           context 'default is set' do
             before { selection_3.update_attribute(:is_default, true) }
 
             it('has selection_3 selected') { expect(Nokogiri::HTML(new_form.radio_tag).search('input[checked]').first['value']).to eq(selection_3.id.to_s) }
-            it('has no blank option') { expect(Nokogiri::HTML(new_form.radio_tag).search('label').first.content).to eq(selection_3.name) }
           end
         end
 
         context 'edit form' do
           context 'relation (priority_id) is nil' do
             it('has no selected item') { expect(Nokogiri::HTML(edit_form.radio_tag).search('input[checked]')).to be_empty }
-            it('has a blank option') { expect(Nokogiri::HTML(edit_form.radio_tag).search('label').first.content).to eq('none') }
           end
           context 'when relation (priority_id) is set to selection_3' do
             before { ticket.update_attribute(:priority_id, selection_3.id) }
 
             it('item is selected') { expect(Nokogiri::HTML(edit_form.radio_tag).search('input[checked]').first['value']).to eq(selection_3.id.to_s) }
-            it('has no blank option') { expect(Nokogiri::HTML(edit_form.radio_tag).search('label').first.content).to eq(selection_3.name) }
-            it('has a blank option when include_blank set') { expect(Nokogiri::HTML(edit_form(options: {include_blank: true}).radio_tag).search('label').first.content).to eq('none') }
           end
         end
         it 'returns valid html' do
           ticket.update_attribute(:priority_id, selection_3.id)
-          expect(edit_form(options: {include_blank: true}, html_options: {class: 'fred'}).radio_tag).to eq "<label class=\"fred\" for=\"ticket_priority_id\"><input class=\"fred\" id=\"ticket_priority_id\" name=\"ticket[priority_id]\" type=\"radio\" />none</label><label class=\"fred\" for=\"ticket_priority_id_4\"><input checked=\"checked\" class=\"fred\" id=\"ticket_priority_id_4\" name=\"ticket[priority_id]\" type=\"radio\" value=\"4\" />high</label><label checked=\"checked\" class=\"fred\" for=\"ticket_priority_id_2\"><input class=\"fred\" id=\"ticket_priority_id_2\" name=\"ticket[priority_id]\" type=\"radio\" value=\"2\" />low</label><label class=\"fred\" for=\"ticket_priority_id_3\"><input class=\"fred\" id=\"ticket_priority_id_3\" name=\"ticket[priority_id]\" type=\"radio\" value=\"3\" />medium</label>"
+          expect(edit_form(options: {}, html_options: {class: 'fred'}).radio_tag).to eq "<label class=\"fred selection radio-button\" for=\"ticket_priority_id_4\"><input checked=\"checked\" class=\"fred selection radio-button\" id=\"ticket_priority_id_4\" name=\"ticket[priority_id]\" type=\"radio\" value=\"4\" />high</label><label checked=\"checked\" class=\"fred selection radio-button selection radio-button\" for=\"ticket_priority_id_2\"><input class=\"fred selection radio-button selection radio-button\" id=\"ticket_priority_id_2\" name=\"ticket[priority_id]\" type=\"radio\" value=\"2\" />low</label><label class=\"fred selection radio-button selection radio-button selection radio-button\" for=\"ticket_priority_id_3\"><input class=\"fred selection radio-button selection radio-button selection radio-button\" id=\"ticket_priority_id_3\" name=\"ticket[priority_id]\" type=\"radio\" value=\"3\" />medium</label>"
+        end
+      end
+    end
+
+    describe '.check_box_tag' do
+      context 'invalid' do
+        it 'displays warning when system_code does not exist' do
+          expect(edit_form.check_box_tag).to eq("Could not find system_code of 'priority' or 'ticket_priority'")
+        end
+        it 'displays warning for system_code override' do
+          expect(edit_form(options: {system_code: "hello"}).check_box_tag).to eq("Could not find system_code of 'hello' or 'ticket_hello'")
+        end
+      end
+      context 'valid system_code' do
+        before { all_selections }
+
+        context 'new form' do
+          context 'no default' do
+            it('has no selected item') { expect(Nokogiri::HTML(new_form.check_box_tag).search('input[checked]')).to be_empty }
+          end
+          context 'default is set' do
+            before { selection_3.update_attribute(:is_default, true) }
+
+            it('has selection_3 selected') { expect(Nokogiri::HTML(new_form.check_box_tag).search('input[checked]').first['value']).to eq(selection_3.id.to_s) }
+          end
+        end
+
+        context 'edit form' do
+          context 'relation (priority_id) is nil' do
+            it('has no selected item') { expect(Nokogiri::HTML(edit_form.check_box_tag).search('input[checked]')).to be_empty }
+          end
+          context 'when relation (priority_id) is set to selection_3' do
+            before { ticket.update_attribute(:priority_id, selection_3.id) }
+
+            it('item is selected') { expect(Nokogiri::HTML(edit_form.check_box_tag).search('input[checked]').first['value']).to eq(selection_3.id.to_s) }
+          end
+        end
+        it 'returns valid html' do
+          ticket.update_attribute(:priority_id, selection_3.id)
+          expect(edit_form(options: {}, html_options: {class: 'fred'}).check_box_tag).to eq "<label class=\"fred selection check-box\" for=\"ticket_priority_id_4\"><input checked=\"checked\" class=\"fred selection check-box\" id=\"ticket_priority_id\" name=\"ticket[priority_id]\" type=\"checkbox\" value=\"4\" />high</label><label checked=\"checked\" class=\"fred selection check-box selection check-box\" for=\"ticket_priority_id_2\"><input class=\"fred selection check-box selection check-box\" id=\"ticket_priority_id\" name=\"ticket[priority_id]\" type=\"checkbox\" value=\"2\" />low</label><label class=\"fred selection check-box selection check-box selection check-box\" for=\"ticket_priority_id_3\"><input class=\"fred selection check-box selection check-box selection check-box\" id=\"ticket_priority_id\" name=\"ticket[priority_id]\" type=\"checkbox\" value=\"3\" />medium</label>"
         end
       end
     end
