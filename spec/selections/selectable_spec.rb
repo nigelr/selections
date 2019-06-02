@@ -12,24 +12,24 @@ describe Selections do
       selection_2
     end
     it "returns all when none selected" do
-      parent.children.filter_archived_except_selected(nil)
-      expect(parent.children.filter_archived_except_selected(nil)).to match_array([selection_2, selection_1])
+      parent.children.filter_archived_except_selected([])
+      expect(parent.children.filter_archived_except_selected([])).to match_array([selection_2, selection_1])
     end
     it "returns all even when selected" do
-      expect(parent.children.filter_archived_except_selected(selection_2.id)).to match_array([selection_2, selection_1])
+      expect(parent.children.filter_archived_except_selected([selection_2.id])).to match_array([selection_2, selection_1])
     end
     context "archived" do
       before :each do
         selection_2.update_attribute(:archived, "1")
       end
       it "returns unarchived items" do
-        expect(parent.children.filter_archived_except_selected(nil)).to match_array([selection_1])
+        expect(parent.children.filter_archived_except_selected([])).to match_array([selection_1])
       end
       it "returns only unarchived items when archived is not selected" do
-        expect(parent.children.filter_archived_except_selected(selection_1.id)).to match_array([selection_1])
+        expect(parent.children.filter_archived_except_selected([selection_1.id])).to match_array([selection_1])
       end
       it "returns archived item if selected" do
-        expect(parent.children.filter_archived_except_selected(selection_2.id)).to match_array([selection_2, selection_1])
+        expect(parent.children.filter_archived_except_selected([selection_2.id])).to match_array([selection_2, selection_1])
       end
     end
   end

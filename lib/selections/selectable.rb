@@ -23,7 +23,7 @@ module Selections
 
         default_scope { order([:position_value, :name]) }
 
-        scope :filter_archived_except_selected, lambda { |selected_id| where(["archived_at is ? or id = ?", nil, selected_id.to_i]) }
+        scope :filter_archived_except_selected, lambda { |selected_id| where(["archived_at is ? or id IN (?)", nil, selected_id.map(&:to_i)]) }
       end
 
       module ClassMethods

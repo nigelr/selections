@@ -32,6 +32,12 @@ module Selections
       SelectionTag.new(self, object, field, options, html_options).radio_tag
     end
 
+    def check_boxes(field, options = {})
+      html_options = options.clone
+      html_options.delete_if {|key, value| key == :system_code}
+      SelectionTag.new(self, object, field, options, html_options).check_box_tag
+    end
+
     class SelectionTag #:nodoc:
       attr_reader :form, :object, :field, :options, :html_options, :selection, :field_id, :system_code_name
 
@@ -43,7 +49,7 @@ module Selections
 
         @system_code_name = options[:system_code] || field
         @selection = Selections.model
-        @field_id ||= (field.to_s + "_id").to_sym
+        @field_id ||= options[:field_id] || (field.to_s + "_id").to_sym
         @options = options || {}
       end
 
@@ -61,13 +67,13 @@ module Selections
       end
 
       def items
-        @items ||= system_code.children.filter_archived_except_selected(object.send(field_id))
+        @items ||= system_code.children.filter_archived_except_selected(Array(object.send(field_id)))
       end
 
       def select_tag
         if system_code
-          #TODO add default style
-          #html_options[:style] ||=
+          html_options[:class] ||= ''
+          html_options[:class] << ' selection select'
           options[:include_blank] = include_blank?
           options[:selected] = selected_item
           form.select field_id, items.map { |item| [item.name, item.id] }, options, html_options
@@ -78,14 +84,29 @@ module Selections
 
       def radio_tag
         if system_code
-          formatted_items = include_blank? ? items.to_a.unshift(selection.new(name: blank_content)) : items.to_a
-
-
-          formatted_items.inject('') do |build, item|
+          items.inject('') do |build, item|
+            html_options[:class] ||= ''
+            html_options[:class] << ' selection radio-button'
             label_html_options = item.id ? html_options.merge(value: item.id.to_s) : html_options
-            html_options[:checked] = selected_item == item.id.to_s && !item.new_record?
+            html_options[:checked] = selected_item.include?(item.id.to_s) && !item.new_record?
             build + form.label(field_id, label_html_options) do
               form.radio_button(field_id, item.id, html_options) + item.name
+            end
+          end.html_safe
+        else
+          error_message
+        end
+      end
+
+      def check_box_tag
+        if system_code
+          items.inject('') do |build, item|
+            html_options[:class] ||= ''
+            html_options[:class] << ' selection check-box'
+            label_html_options = item.id ? html_options.merge(value: item.id.to_s) : html_options
+            html_options[:checked] = selected_item.include?(item.id.to_s) && !item.new_record?
+            build + form.label(field_id, label_html_options) do
+              form.check_box(field_id, html_options, item.id, false) + item.name
             end
           end.html_safe
         else
@@ -99,9 +120,9 @@ module Selections
 
       def selected_item
         if object.new_record? && object.send(field_id).blank?
-           default_item
+           Array(default_item)
         else
-          object.send(field_id).to_s
+          Array(object.send(field_id)).map(&:to_s)
         end
       end
 
