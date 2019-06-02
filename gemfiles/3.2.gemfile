@@ -4,6 +4,5 @@ source "https://rubygems.org"
 
 gem "rails", "~> 3.2.15"
 gem "shoulda-matchers"
-gem "selections", :path => "../"
 
 gemspec :path => "../"

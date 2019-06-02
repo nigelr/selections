@@ -34,7 +34,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'rake'
   gem.add_development_dependency 'rspec', '~> 3.2'
   gem.add_development_dependency 'appraisal'
-  gem.add_development_dependency 'sqlite3'
+  gem.add_development_dependency 'sqlite3', '~> 1.3.13'
   gem.add_development_dependency 'nokogiri'
   gem.add_development_dependency 'generator_spec'
   gem.add_development_dependency 'minitest'
