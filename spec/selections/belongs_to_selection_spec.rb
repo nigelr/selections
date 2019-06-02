@@ -34,37 +34,4 @@ describe Selections::BelongsToSelection do
       expect(assc.macro).to eq :belongs_to
     end
   end
-
-  context 'dynamic methods' do
-    subject { ticket_class.new }
-    %w{low medium high}.each do |p|
-      it "creates the method #priority_#{p}?" do
-        expect(subject.respond_to? "priority_#{p}?".to_sym).to be_truthy
-      end
-    end
-
-    context 'high priority' do
-      before { subject.priority = selection_3 }
-
-      it("#priority_high? is true") do
-        expect(subject.priority_high?).to be_truthy
-      end
-      it("#priority_medium? is false") do
-        expect(subject.priority_medium?).to be_falsey
-      end
-      it("#priority_low? is false") do
-        expect(subject.priority_low?).to be_falsey
-      end
-    end
-
-    context 'with no matching selections' do
-      it "does not create any methods" do
-        # ensure only the method we expect is called
-        expect(ticket_class).to receive(:define_method).with(:autosave_associated_records_for_wrong)
-        # Test it doesnt reach define method stage
-        expect_any_instance_of(Selection).not_to receive(:children)
-        ticket_class.belongs_to_selection :wrong
-      end
-    end
-  end
 end
