@@ -27,6 +27,7 @@ module Selections
       belongs_to target, options.merge(:class_name => "Selection")
 
       # The "selections" table may not exist during certain rake scenarios such as db:migrate or db:reset.
+      ActiveRecord::Base.connection_pool.with_connection(&:active?) rescue return
       if ActiveRecord::VERSION::MAJOR > 4
         table_exists = ActiveRecord::Base.connection.data_source_exists?(Selection.table_name)
       else
