@@ -20,7 +20,7 @@ describe Selections::BelongsToSelection do
         "Ticket"
       end
 
-      belongs_to_selection :priority
+      belongs_to_selection :priority, predicates: true, scopes: true
     end
   end
 
@@ -37,33 +37,58 @@ describe Selections::BelongsToSelection do
 
   context 'dynamic methods' do
     subject { ticket_class.new }
-    %w{low medium high}.each do |p|
-      it "creates the method #priority_#{p}?" do
-        expect(subject.respond_to? "priority_#{p}?".to_sym).to be_truthy
-      end
-    end
 
-    context 'high priority' do
-      before { subject.priority = selection_3 }
+    context 'predicates' do
+      %w{low medium high}.each do |p|
+        it "creates the method #priority_#{p}?" do
+          expect(subject.respond_to? "ticket_priority_#{p}?".to_sym).to be_truthy
+        end
+      end
 
-      it("#priority_high? is true") do
-        expect(subject.priority_high?).to be_truthy
-      end
-      it("#priority_medium? is false") do
-        expect(subject.priority_medium?).to be_falsey
-      end
-      it("#priority_low? is false") do
-        expect(subject.priority_low?).to be_falsey
-      end
-    end
+      context 'high priority' do
+        before { subject.priority = selection_3 }
 
-    context 'with no matching selections' do
-      it "does not create any methods" do
-        # ensure only the method we expect is called
-        expect(ticket_class).to receive(:define_method).with(:autosave_associated_records_for_wrong)
-        # Test it doesnt reach define method stage
-        expect_any_instance_of(Selection).not_to receive(:children)
-        ticket_class.belongs_to_selection :wrong
+        it("#priority_high? is true") do
+          expect(subject.ticket_priority_high?).to be_truthy
+        end
+        it("#priority_medium? is false") do
+          expect(subject.ticket_priority_medium?).to be_falsey
+        end
+        it("#priority_low? is false") do
+          expect(subject.ticket_priority_low?).to be_falsey
+        end
+      end
+
+      context 'with no matching selections' do
+        it "does not create any methods" do
+          # ensure only the method we expect is called
+          expect(ticket_class).to receive(:define_method).with(:autosave_associated_records_for_wrong)
+          # Test it doesnt reach define method stage
+          expect_any_instance_of(Selection).not_to receive(:children)
+          ticket_class.belongs_to_selection :wrong
+        end
+      end
+
+      context 'scopes' do
+        %w{low medium high}.each do |p|
+          it "creates the method #ticket_priority_#{p}s" do
+            expect(ticket_class.respond_to? "ticket_priority_#{p}".pluralize.to_sym).to be_truthy
+          end
+        end
+
+        context 'high priority' do
+          before { subject.priority = selection_3 }
+
+          it("#priority_highs is true") do
+            expect(ticket_class.ticket_priority_highs).to eq([])
+          end
+          it("#priority_media is false") do
+            expect(ticket_class.ticket_priority_media).to eq([])
+          end
+          it("#priority_lows is false") do
+            expect(ticket_class.ticket_priority_lows).to eq([])
+          end
+        end
       end
     end
   end
