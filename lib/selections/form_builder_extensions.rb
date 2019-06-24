@@ -84,9 +84,9 @@ module Selections
 
       def radio_tag
         if system_code
+          html_options[:class] ||= ''
+          html_options[:class] << ' selection radio-button'
           items.inject('') do |build, item|
-            html_options[:class] ||= ''
-            html_options[:class] << ' selection radio-button'
             label_html_options = item.id ? html_options.merge(value: item.id.to_s) : html_options
             html_options[:checked] = selected_item.include?(item.id.to_s) && !item.new_record?
             build + form.label(field_id, label_html_options) do
@@ -100,14 +100,12 @@ module Selections
 
       def check_box_tag
         if system_code
+          html_options[:class] ||= ''
+          html_options[:class] << ' selection check-box'
           items.inject('') do |build, item|
-            html_options[:class] ||= ''
-            html_options[:class] << ' selection check-box'
-            label_html_options = item.id ? html_options.merge(value: item.id.to_s) : html_options
             html_options[:checked] = selected_item.include?(item.id.to_s) && !item.new_record?
-            build + form.label(field_id, label_html_options) do
-              form.check_box(field_id, html_options, item.id, false) + item.name
-            end
+            html_options[:value] = item.id.to_s
+            build + '<span>' + form.check_box(field_id, html_options, item.id, false) + item.name + '</span>'
           end.html_safe
         else
           error_message
