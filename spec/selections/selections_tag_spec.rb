@@ -318,7 +318,7 @@ describe SelectionTag do
         end
         it 'returns valid html' do
           ticket.update_attribute(:priority_id, selection_3.id)
-          expect(edit_form(options: {}, html_options: {class: 'fred'}).radio_tag).to eq "<label class=\"fred selection radio-button\" for=\"ticket_priority_id_4\"><input checked=\"checked\" class=\"fred selection radio-button\" id=\"ticket_priority_id_4\" name=\"ticket[priority_id]\" type=\"radio\" value=\"4\" />high</label><label checked=\"checked\" class=\"fred selection radio-button selection radio-button\" for=\"ticket_priority_id_2\"><input class=\"fred selection radio-button selection radio-button\" id=\"ticket_priority_id_2\" name=\"ticket[priority_id]\" type=\"radio\" value=\"2\" />low</label><label class=\"fred selection radio-button selection radio-button selection radio-button\" for=\"ticket_priority_id_3\"><input class=\"fred selection radio-button selection radio-button selection radio-button\" id=\"ticket_priority_id_3\" name=\"ticket[priority_id]\" type=\"radio\" value=\"3\" />medium</label>"
+          expect(edit_form(options: {}, html_options: {class: 'fred'}).radio_tag).to eq "<label class=\"fred selection radio-button\" for=\"ticket_priority_id_4\"><input checked=\"checked\" class=\"fred selection radio-button\" id=\"ticket_priority_id_4\" name=\"ticket[priority_id]\" type=\"radio\" value=\"4\" />high</label><label checked=\"checked\" class=\"fred selection radio-button\" for=\"ticket_priority_id_2\"><input class=\"fred selection radio-button\" id=\"ticket_priority_id_2\" name=\"ticket[priority_id]\" type=\"radio\" value=\"2\" />low</label><label class=\"fred selection radio-button\" for=\"ticket_priority_id_3\"><input class=\"fred selection radio-button\" id=\"ticket_priority_id_3\" name=\"ticket[priority_id]\" type=\"radio\" value=\"3\" />medium</label>"
         end
       end
     end
@@ -358,7 +358,7 @@ describe SelectionTag do
         end
         it 'returns valid html' do
           ticket.update_attribute(:priority_id, selection_3.id)
-          expect(edit_form(options: {}, html_options: {class: 'fred'}).check_box_tag).to eq "<label class=\"fred selection check-box\" for=\"ticket_priority_id_4\"><input checked=\"checked\" class=\"fred selection check-box\" id=\"ticket_priority_id\" name=\"ticket[priority_id]\" type=\"checkbox\" value=\"4\" />high</label><label checked=\"checked\" class=\"fred selection check-box selection check-box\" for=\"ticket_priority_id_2\"><input class=\"fred selection check-box selection check-box\" id=\"ticket_priority_id\" name=\"ticket[priority_id]\" type=\"checkbox\" value=\"2\" />low</label><label class=\"fred selection check-box selection check-box selection check-box\" for=\"ticket_priority_id_3\"><input class=\"fred selection check-box selection check-box selection check-box\" id=\"ticket_priority_id\" name=\"ticket[priority_id]\" type=\"checkbox\" value=\"3\" />medium</label>"
+          expect(edit_form(options: {}, html_options: {class: 'fred'}).check_box_tag).to eq "<span><input checked=\"checked\" class=\"fred selection check-box\" id=\"ticket_priority_id\" name=\"ticket[priority_id]\" type=\"checkbox\" value=\"4\" />high</span><span><input class=\"fred selection check-box\" id=\"ticket_priority_id\" name=\"ticket[priority_id]\" type=\"checkbox\" value=\"2\" />low</span><span><input class=\"fred selection check-box\" id=\"ticket_priority_id\" name=\"ticket[priority_id]\" type=\"checkbox\" value=\"3\" />medium</span>"
         end
       end
     end

@@ -15,27 +15,13 @@ module Selections
     # * +system_code+ - Overrides the automatic system_code name based on the fieldname and looks up the list of items in Selection
 
     def selections(field, options = {}, html_options = {})
-      SelectionTag.new(self, object, field, options, html_options).select_tag
-    end
-
-    # Build a radio button list based field name finding items within Selection
-    #
-    # Example
-    #   form_for(@ticket) do |f|
-    #     f.select :priority
-    # options
-    # * +system_code+ - Overrides the automatic system_code name based on the fieldname and looks up the list of items in Selection
-
-    def radios(field, options = {})
-      html_options = options.clone
-      html_options.delete_if {|key, value| key == :system_code}
-      SelectionTag.new(self, object, field, options, html_options).radio_tag
-    end
-
-    def check_boxes(field, options = {})
-      html_options = options.clone
-      html_options.delete_if {|key, value| key == :system_code}
-      SelectionTag.new(self, object, field, options, html_options).check_box_tag
+      if options[:as] == 'radio'
+        SelectionTag.new(self, object, field, options, html_options).radio_tag
+      elsif options[:as] == 'check_boxes'
+        SelectionTag.new(self, object, field, options, html_options).check_box_tag
+      else
+        SelectionTag.new(self, object, field, options, html_options).select_tag
+      end
     end
 
     class SelectionTag #:nodoc:
