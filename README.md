@@ -128,21 +128,20 @@ If you have a selection named differently to the foreign key eg. the foreign key
 <%= f.selections :variety, system_code: :category %>
 ```
 
+#### As option override
+
 ### Radio Buttons Options
 
-```ruby
-  f.radios :ticket, options = {}
-```
-
-The radios method excepts all the standard Ruby on Rails form helper options and html formatting - http://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html#method-i-radio_button
-
-### Check Box Options
+If you want your input to be something other than a select tag then you can use the as tag to change it to a radio or check_boxes list.
+The as option will default to select.
 
 ```ruby
-  f.check_boxes :ticket, options = {}
+  f.selections :ticket, options = { as: :radio }
 ```
 
-The check_boxes method check_boxes all the standard Ruby on Rails form helper options and html formatting - https://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html#method-i-check_box
+```ruby
+  f.selections :ticket, options = { as: :check_boxes }
+```
 
 ### Scoped System Code
 

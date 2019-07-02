@@ -13,11 +13,12 @@ module Selections
     #
     # options
     # * +system_code+ - Overrides the automatic system_code name based on the fieldname and looks up the list of items in Selection
+    # * +as+ - Changes the input type used. Defaults to a select_tag
 
     def selections(field, options = {}, html_options = {})
-      if options[:as] == 'radio'
+      if options[:as].to_s == 'radio'
         SelectionTag.new(self, object, field, options, html_options).radio_tag
-      elsif options[:as] == 'check_boxes'
+      elsif options[:as].to_s == 'check_boxes'
         SelectionTag.new(self, object, field, options, html_options).check_box_tag
       else
         SelectionTag.new(self, object, field, options, html_options).select_tag
@@ -91,7 +92,8 @@ module Selections
           items.inject('') do |build, item|
             html_options[:checked] = selected_item.include?(item.id.to_s) && !item.new_record?
             html_options[:value] = item.id.to_s
-            build + '<span>' + form.check_box(field_id, html_options, item.id, false) + item.name + '</span>'
+            html_options[:multiple] = options[:multiple]
+            build + "<span class=\"#{html_options[:class]}\">" + form.check_box(field_id, html_options, item.id, false) + item.name + '</span>'
           end.html_safe
         else
           error_message
