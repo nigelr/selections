@@ -71,6 +71,17 @@ module Selections
               end
             end
           end
+
+          if multiple
+            method_name = "#{target}_names"
+          else
+            method_name = "#{target}_name"
+          end
+          class_eval do
+            define_method method_name do
+              Selection.where(id: Array(send(target_id)).reject(&:blank?)).map(&:name).join(', ')
+            end
+          end
         end
 
         class_eval do
