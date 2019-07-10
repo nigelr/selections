@@ -90,6 +90,40 @@ describe Selections::BelongsToSelection do
           end
         end
       end
+
+      describe '.method_missing' do
+        context 'predicates' do
+          context 'when it starts with an existing selections name' do
+            it 'returns false' do
+              expect(subject.priority_lower?).to be_falsey
+            end
+          end
+
+          context 'when it does not start with an existing selections name' do
+            it 'raises an error' do
+              expect do
+                subject.other_selection?
+              end.to raise_error(NoMethodError)
+            end
+          end
+        end
+
+        context 'scopes' do
+          context 'when it starts with an existing selections name' do
+            it 'returns an empty array' do
+              expect(ticket_class.priority_lower).to eq([])
+            end
+          end
+
+          context 'when it does not start with an existing selections name' do
+            it 'raises an error' do
+              expect do
+                ticket_class.other_selection
+              end.to raise_error(NoMethodError)
+            end
+          end
+        end
+      end
     end
   end
 end

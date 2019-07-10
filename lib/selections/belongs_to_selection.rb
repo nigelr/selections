@@ -28,7 +28,7 @@ module Selections
       multiple = !!options[:multiple]
       predicates = !!options[:predicates]
       scopes = !!options[:scopes]
-      belongs_to target, options.reject { |k, v| k.in?([:system_code, :multiple, :scopes, :predicates]) }.merge(:class_name => "Selection")
+      belongs_to target, options.reject { |k, v| [:system_code, :multiple, :scopes, :predicates].include?(k) }.merge(:class_name => "Selection")
 
       # The "selections" table may not exist during certain rake scenarios such as db:migrate or db:reset.
       ActiveRecord::Base.connection_pool.with_connection(&:active?) rescue return
@@ -69,6 +69,48 @@ module Selections
                   scope(scope_name, where("#{target_id} = ?", s.id))
                 end
               end
+            end
+          end
+        end
+
+        class_eval do
+          def respond_to_missing?(method_name, include_private = false)
+            predicate_method?(method_name) || super
+          end
+
+          def method_missing(method, *args, &block)
+            if predicate_method?(method)
+              false
+            else
+              super
+            end
+          end
+
+          def predicate_method?(method)
+            method[-1] == '?' && self.class.reflect_on_all_associations(:belongs_to).any? do |relationship|
+              relationship.options[:class_name] == 'Selection' && method.to_s.starts_with?(relationship.name.to_s)
+            end
+          end
+
+          private :predicate_method?
+        end
+
+        instance_eval do
+          def respond_to_missing?(method_name, include_private = false)
+            scope_method?(method_name) || super
+          end
+
+          def method_missing(method, *args, &block)
+            if scope_method?(method)
+              []
+            else
+              super
+            end
+          end
+
+          def scope_method?(method)
+            self.reflect_on_all_associations(:belongs_to).any? do |relationship|
+              relationship.options[:class_name] == 'Selection' && method.to_s.starts_with?(relationship.name.to_s)
             end
           end
         end
