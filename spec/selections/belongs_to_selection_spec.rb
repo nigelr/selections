@@ -60,9 +60,10 @@ describe Selections::BelongsToSelection do
       end
 
       context 'with no matching selections' do
-        it "does not create any methods" do
+        it "only creates the name method" do
           # ensure only the method we expect is called
           expect(ticket_class).to receive(:define_method).with(:autosave_associated_records_for_wrong)
+          expect(ticket_class).to receive(:define_method).with('wrong_name')
           # Test it doesnt reach define method stage
           expect_any_instance_of(Selection).not_to receive(:children)
           ticket_class.belongs_to_selection :wrong
