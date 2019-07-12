@@ -91,6 +91,22 @@ describe Selections::BelongsToSelection do
         end
       end
 
+      context 'names' do
+        context 'when the selection is nil' do
+          it 'returns an empty string' do
+            subject.priority = nil
+            expect(subject.priority_name).to eq('')
+          end
+        end
+
+        context 'when the selection is not nil' do
+          it 'returns the selection name' do
+            subject.priority = selection_3
+            expect(subject.priority_name).to eq(selection_3.name)
+          end
+        end
+      end
+
       describe '.method_missing' do
         context 'predicates' do
           context 'when it starts with an existing selections name' do

@@ -191,9 +191,8 @@ eg: show.html.erb
 </p>
 ```
 
-## Matchers
-
-Selections supports lookup using the boolean ? method, as an example:
+## Predicates
+Selections supports predicate methods if you add the `predicates: true` option to the belongs_to_selection model helper, as an example:
 
 instead of needing to do
 
@@ -207,7 +206,35 @@ you can check directly on the instance:
   if @ticket.priority_high?
 ```
 
-Thanks to @mattconnolly
+## Scopes
+Selections supports scope methods if you add the `scopes: true` option to the belongs_to_selection model helper, as an example:
+
+instead of create a scope for
+
+```ruby
+  scope :ticket_priority_high, -> { where(priority_id: Selection.ticket_priority_high.id) }
+```
+
+this scope is provided for you:
+
+```ruby
+  @ticket.ticket_priority_high
+```
+
+## Name Methods
+
+By default the belongs_to_selection model helper provides an instance method for displaying the name or names of the saved selection value as an example:
+
+Instead of
+```ruby
+  @ticket.priority.name
+``` 
+
+You can now just do
+
+```ruby
+  @ticket.priority_name
+```
 
 ## Automatic Features
 #### Include Blank
