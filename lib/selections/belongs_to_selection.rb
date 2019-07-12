@@ -41,8 +41,8 @@ module Selections
       if table_exists
         prefix = self.name.downcase
         parent = Selection.where(system_code: system_code).first || Selection.where(system_code: "#{prefix}_#{target}").first || Selection.where(system_code: target.to_s).first
+        target_id = multiple ? target.to_sym : "#{target}_id".to_sym
         if parent
-          target_id = multiple ? target.to_sym : "#{target}_id".to_sym
           parent.children.each do |s|
             if predicates
               if system_code
@@ -71,16 +71,16 @@ module Selections
               end
             end
           end
+        end
 
-          if multiple
-            method_name = "#{target}_names"
-          else
-            method_name = "#{target}_name"
-          end
-          class_eval do
-            define_method method_name do
-              Selection.where(id: Array(send(target_id)).reject(&:blank?)).map(&:name).join(', ')
-            end
+        if multiple
+          method_name = "#{target}_names"
+        else
+          method_name = "#{target}_name"
+        end
+        class_eval do
+          define_method method_name do
+            Selection.where(id: Array(send(target_id)).reject(&:blank?)).map(&:name).join(', ')
           end
         end
 
