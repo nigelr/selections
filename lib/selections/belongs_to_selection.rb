@@ -28,7 +28,11 @@ module Selections
       multiple = !!options[:multiple]
       predicates = !!options[:predicates]
       scopes = !!options[:scopes]
-      belongs_to target, options.reject { |k, v| [:system_code, :multiple, :scopes, :predicates].include?(k) }.merge(:class_name => "Selection")
+      if multiple
+        has_many target, options.reject { |k, v| [:system_code, :multiple, :scopes, :predicates].include?(k) }.merge(class_name: "Selection", primary_key: "#{target}_ids", foreign_key: :id)
+      else
+        belongs_to target, options.reject { |k, v| [:system_code, :multiple, :scopes, :predicates].include?(k) }.merge(class_name: "Selection")
+      end
 
       # The "selections" table may not exist during certain rake scenarios such as db:migrate or db:reset.
       ActiveRecord::Base.connection_pool.with_connection(&:active?) rescue return
@@ -41,7 +45,7 @@ module Selections
       if table_exists
         prefix = self.name.downcase
         parent = Selection.where(system_code: system_code).first || Selection.where(system_code: "#{prefix}_#{target}").first || Selection.where(system_code: target.to_s).first
-        target_id = multiple ? target.to_sym : "#{target}_id".to_sym
+        target_id = multiple ? "#{target}_ids".to_sym : "#{target}_id".to_sym
         if parent
           parent.children.each do |s|
             if predicates
@@ -98,7 +102,7 @@ module Selections
           end
 
           def predicate_method?(method)
-            method[-1] == '?' && self.class.reflect_on_all_associations(:belongs_to).any? do |relationship|
+            method[-1] == '?' && self.class.reflect_on_all_associations.any? do |relationship|
               relationship.options[:class_name] == 'Selection' && method.to_s.starts_with?(relationship.name.to_s)
             end
           end
@@ -120,7 +124,7 @@ module Selections
           end
 
           def scope_method?(method)
-            self.reflect_on_all_associations(:belongs_to).any? do |relationship|
+            self.reflect_on_all_associations.any? do |relationship|
               relationship.options[:class_name] == 'Selection' && method.to_s.starts_with?(relationship.name.to_s)
             end
           end
