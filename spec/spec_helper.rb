@@ -23,6 +23,7 @@ ActiveRecord::Migration.create_table :tickets do |t|
   t.string :name
   t.integer :parent_id
   t.integer :priority_id
+  t.text :priority_ids, array: true
   t.timestamps
 end
 

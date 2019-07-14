@@ -181,6 +181,15 @@ class Ticket < ActiveRecord::Base
 end
 ```
 
+If you want a model to have a has_many relationship to a selections list you can create an array field and use the `has_many_selections` method like so:
+```ruby
+class Ticket < ActiveRecord::Base
+
+  has_many_selections :priorities # DB attribute is priorities_ids
+
+end
+```
+
 From an instance of a ticket within a view the belongs_to selection will return string (to_s).
 eg: show.html.erb
 

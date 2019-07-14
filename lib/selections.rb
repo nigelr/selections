@@ -5,6 +5,7 @@ require 'action_view'
 module Selections
 
   require 'selections/belongs_to_selection'
+  require 'selections/has_many_selections'
   require 'selections/form_builder_extensions'
   require 'selections/selectable'
 
