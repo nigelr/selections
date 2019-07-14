@@ -1,14 +1,14 @@
 require 'spec_helper'
 require 'shoulda/matchers'
 
-describe Selections::BelongsToSelection do
+describe Selections::HasManySelections do
   let(:parent) { Selection.create(name: "priority", system_code: "ticket_priority") }
   let(:selection_1) { Selection.create(name: "low", parent_id: parent.id, system_code: "ticket_priority_low") }
   let(:selection_2) { Selection.create(name: "medium", parent_id: parent.id, system_code: "ticket_priority_medium") }
   let(:selection_3) { Selection.create(name: "high", parent_id: parent.id, system_code: "ticket_priority_high") }
 
   let(:ticket_class) do
-    # create the priority records *before* using belongs_to_selection on the class.
+    # create the priority records *before* using has_many_selections on the class.
     selection_1; selection_2; selection_3
 
     Class.new(ActiveRecord::Base) do
@@ -19,19 +19,14 @@ describe Selections::BelongsToSelection do
         "Ticket"
       end
 
-      belongs_to_selection :priority, predicates: true, scopes: true
+      has_many_selections :priorities, predicates: true, scopes: true
+
+      serialize :priority_ids
     end
   end
 
   before do
     ticket_class
-  end
-
-  context 'relationships' do
-    it "creates a belongs to relationship" do
-      assc = ticket_class.reflect_on_association(:priority)
-      expect(assc.macro).to eq :belongs_to
-    end
   end
 
   context 'dynamic methods' do
@@ -45,27 +40,24 @@ describe Selections::BelongsToSelection do
       end
 
       context 'high priority' do
-        before { subject.priority = selection_3 }
+        before { subject.priority_ids = [selection_3.id] }
 
-        it("#priority_high? is true") do
+        it("#priorities_high? is true") do
           expect(subject.ticket_priority_high?).to be_truthy
         end
-        it("#priority_medium? is false") do
+        it("#priorities_medium? is false") do
           expect(subject.ticket_priority_medium?).to be_falsey
         end
-        it("#priority_low? is false") do
+        it("#priorities_low? is false") do
           expect(subject.ticket_priority_low?).to be_falsey
         end
       end
 
       context 'with no matching selections' do
-        it "only creates the name method" do
-          # ensure only the method we expect is called
-          expect(ticket_class).to receive(:define_method).with(:autosave_associated_records_for_wrong)
-          expect(ticket_class).to receive(:define_method).with('wrong_name')
+        it "creates no methods" do
           # Test it doesnt reach define method stage
           expect_any_instance_of(Selection).not_to receive(:children)
-          ticket_class.belongs_to_selection :wrong
+          ticket_class.has_many_selections :wrong
         end
       end
 
@@ -77,16 +69,15 @@ describe Selections::BelongsToSelection do
         end
 
         context 'high priority' do
-          before { subject.priority = selection_3 }
+          before { subject.priority_ids = [selection_3.id]; subject.save! }
 
-          it("#priority_highs is true") do
-            subject.save!
+          it("#priorities_highs is true") do
             expect(ticket_class.ticket_priority_highs).to eq([subject])
           end
-          it("#priority_media is false") do
+          it("#priorities_media is false") do
             expect(ticket_class.ticket_priority_media).to eq([])
           end
-          it("#priority_lows is false") do
+          it("#priorities_lows is false") do
             expect(ticket_class.ticket_priority_lows).to eq([])
           end
         end
@@ -95,15 +86,15 @@ describe Selections::BelongsToSelection do
       context 'names' do
         context 'when the selection is nil' do
           it 'returns an empty string' do
-            subject.priority = nil
-            expect(subject.priority_name).to eq('')
+            subject.priority_ids = []
+            expect(subject.priority_names).to eq('')
           end
         end
 
         context 'when the selection is not nil' do
           it 'returns the selection name' do
-            subject.priority = selection_3
-            expect(subject.priority_name).to eq(selection_3.name)
+            subject.priority_ids = [selection_3.id]
+            expect(subject.priority_names).to eq(selection_3.name)
           end
         end
       end

@@ -181,11 +181,11 @@ class Ticket < ActiveRecord::Base
 end
 ```
 
-If you want a model to have a has_many relationship to a selections list you can create an array field and add the `multiple: true` option to the belongs_to_selection method like so:
+If you want a model to have a has_many relationship to a selections list you can create an array field and use the `has_many_selections` method like so:
 ```ruby
 class Ticket < ActiveRecord::Base
 
-  belongs_to_selection :priorities, multiple: true # DB attribute is priorities_ids
+  has_many_selections :priorities # DB attribute is priorities_ids
 
 end
 ```
