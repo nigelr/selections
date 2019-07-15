@@ -105,7 +105,7 @@ module Selections
           end
 
           def predicate_method?(method)
-            method[-1] == '?' && self.class.reflect_on_all_associations(:has_many).any? do |relationship|
+            method[-1] == '?' && self.class.reflect_on_all_associations.any? do |relationship|
               if ActiveRecord::VERSION::MAJOR > 4
                 relationship.options[:class_name] == 'Selection' && method.to_s.starts_with?(relationship.name.to_s.singularize)
               else
@@ -131,7 +131,7 @@ module Selections
           end
 
           def scope_method?(method)
-            self.reflect_on_all_associations(:has_many).any? do |relationship|
+            self.reflect_on_all_associations.any? do |relationship|
               if ActiveRecord::VERSION::MAJOR > 4
                 relationship.options[:class_name] == 'Selection' && method.to_s.starts_with?(relationship.name.to_s.singularize)
               else
