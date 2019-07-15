@@ -6,6 +6,7 @@ module Selections
 
   require 'selections/belongs_to_selection'
   require 'selections/has_many_selections'
+  require 'selections/method_missing_helpers'
   require 'selections/form_builder_extensions'
   require 'selections/selectable'
 
