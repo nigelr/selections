@@ -20,6 +20,7 @@ describe Selections::BelongsToSelection do
       end
 
       belongs_to_selection :priority, predicates: true, scopes: true
+      has_many_selections :other_priorities, predicates: true, scopes: true
     end
   end
 

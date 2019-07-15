@@ -20,6 +20,7 @@ describe Selections::HasManySelections do
       end
 
       has_many_selections :priorities, predicates: true, scopes: true
+      belongs_to_selection :other_priority, predicates: true, scopes: true
 
       serialize :priority_ids
     end
