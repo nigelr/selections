@@ -93,7 +93,7 @@ module Selections
           end
 
           def predicate_method?(method)
-            method[-1] == '?' && self.class.reflect_on_all_associations(:belongs_to).any? do |relationship|
+            method[-1] == '?' && self.class.reflect_on_all_associations.any? do |relationship|
               relationship.options[:class_name] == 'Selection' && method.to_s.starts_with?(relationship.name.to_s)
             end
           end
@@ -115,7 +115,7 @@ module Selections
           end
 
           def scope_method?(method)
-            self.reflect_on_all_associations(:belongs_to).any? do |relationship|
+            self.reflect_on_all_associations.any? do |relationship|
               relationship.options[:class_name] == 'Selection' && method.to_s.starts_with?(relationship.name.to_s)
             end
           end
