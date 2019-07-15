@@ -86,7 +86,7 @@ module Selections
 
           def method_missing(method, *args, &block)
             if predicate_method?(method)
-              false
+              predicate_method(method)
             else
               super
             end
@@ -102,7 +102,21 @@ module Selections
             end
           end
 
-          private :predicate_method?
+          def predicate_method(method)
+            method[-1] == '?' && self.class.reflect_on_all_associations.any? do |relationship|
+              if ActiveRecord::VERSION::MAJOR > 4 || relationship.macro == :belongs_to
+                if relationship.options[:class_name] == 'Selection' && method.to_s.starts_with?(relationship.name.to_s.singularize)
+                  Array(self.send(relationship.name.to_s)).map(&:id).include?(Selection.find_by_system_code(method.to_s.gsub('?', '')).try(:id))
+                end
+              else
+                if relationship.options[:class_name] == self.class.name && method.to_s.starts_with?(relationship.name.to_s.singularize)
+                  Array(self.send(relationship.name.to_s)).map(&:id).include?(Selection.find_by_system_code(method.to_s.gsub('?', '')).try(:id))
+                end
+              end
+            end
+          end
+
+          private :predicate_method?, :predicate_method
         end
 
         instance_eval do
