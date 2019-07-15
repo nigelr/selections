@@ -90,57 +90,9 @@ module Selections
             end
           end
         end
-
-        class_eval do
-          def respond_to_missing?(method_name, include_private = false)
-            predicate_method?(method_name) || super
-          end
-
-          def method_missing(method, *args, &block)
-            if predicate_method?(method)
-              false
-            else
-              super
-            end
-          end
-
-          def predicate_method?(method)
-            method[-1] == '?' && self.class.reflect_on_all_associations.any? do |relationship|
-              if ActiveRecord::VERSION::MAJOR > 4 || relationship.macro == :belongs_to
-                relationship.options[:class_name] == 'Selection' && method.to_s.starts_with?(relationship.name.to_s.singularize)
-              else
-                relationship.options[:class_name] == self.class.name && method.to_s.starts_with?(relationship.name.to_s.singularize)
-              end
-            end
-          end
-
-          private :predicate_method?
-        end
-
-        instance_eval do
-          def respond_to_missing?(method_name, include_private = false)
-            scope_method?(method_name) || super
-          end
-
-          def method_missing(method, *args, &block)
-            if scope_method?(method)
-              []
-            else
-              super
-            end
-          end
-
-          def scope_method?(method)
-            self.reflect_on_all_associations.any? do |relationship|
-              if ActiveRecord::VERSION::MAJOR > 4 || relationship.macro == :belongs_to
-                relationship.options[:class_name] == 'Selection' && method.to_s.starts_with?(relationship.name.to_s.singularize)
-              else
-                relationship.options[:class_name] == self.name && method.to_s.starts_with?(relationship.name.to_s.singularize)
-              end
-            end
-          end
-        end
       end
+
+      Selections::MethodMissingHelpers.add_method_missing_methods(self)
     end
 
     ActiveSupport.on_load :active_record do

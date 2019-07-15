@@ -111,6 +111,14 @@ describe Selections::BelongsToSelection do
 
       describe '.method_missing' do
         context 'predicates' do
+          context 'when it exists after the initial load' do
+            it 'returns true' do
+              selection_lower = Selection.create(name: "lower", parent_id: parent.id, system_code: "ticket_priority_lower")
+              subject.priority = selection_lower
+              expect(subject.priority_lower?).to be_truthy
+            end
+          end
+
           context 'when it starts with an existing selections name' do
             it 'returns false' do
               expect(subject.priority_lower?).to be_falsey
@@ -127,6 +135,15 @@ describe Selections::BelongsToSelection do
         end
 
         context 'scopes' do
+          context 'when it exists after the initial load' do
+            it 'returns the correct list' do
+              selection_lower = Selection.create(name: "lower", parent_id: parent.id, system_code: "ticket_priority_lower")
+              subject.priority = selection_lower
+              subject.save!
+              expect(ticket_class.priority_lower).to eq([subject])
+            end
+          end
+
           context 'when it starts with an existing selections name' do
             it 'returns an empty array' do
               expect(ticket_class.priority_lower).to eq([])
