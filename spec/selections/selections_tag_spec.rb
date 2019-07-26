@@ -358,7 +358,7 @@ describe SelectionTag do
         end
         it 'returns valid html' do
           ticket.update_attribute(:priority_id, selection_3.id)
-          expect(edit_form(options: {}, html_options: {class: 'fred'}).check_box_tag).to eq "<span class=\"fred selection check-box\"><input checked=\"checked\" class=\"fred selection check-box\" id=\"ticket_priority_id\" name=\"ticket[priority_id]\" type=\"checkbox\" value=\"4\" />high</span><span class=\"fred selection check-box\"><input class=\"fred selection check-box\" id=\"ticket_priority_id\" name=\"ticket[priority_id]\" type=\"checkbox\" value=\"2\" />low</span><span class=\"fred selection check-box\"><input class=\"fred selection check-box\" id=\"ticket_priority_id\" name=\"ticket[priority_id]\" type=\"checkbox\" value=\"3\" />medium</span>"
+          expect(edit_form(options: {}, html_options: {class: 'fred'}).check_box_tag).to eq "<label checked=\"checked\" class=\"fred selection check-box\" for=\"ticket_priority_id_4\"><input checked=\"checked\" class=\"fred selection check-box\" id=\"ticket_priority_id\" name=\"ticket[priority_id]\" type=\"checkbox\" value=\"4\" />high</label><label class=\"fred selection check-box\" for=\"ticket_priority_id_2\"><input class=\"fred selection check-box\" id=\"ticket_priority_id\" name=\"ticket[priority_id]\" type=\"checkbox\" value=\"2\" />low</label><label class=\"fred selection check-box\" for=\"ticket_priority_id_3\"><input class=\"fred selection check-box\" id=\"ticket_priority_id\" name=\"ticket[priority_id]\" type=\"checkbox\" value=\"3\" />medium</label>"
         end
       end
     end
