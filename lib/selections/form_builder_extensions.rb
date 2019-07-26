@@ -93,7 +93,11 @@ module Selections
             html_options[:checked] = selected_item.include?(item.id.to_s) && !item.new_record?
             html_options[:value] = item.id.to_s
             html_options[:multiple] = options[:multiple]
-            build + "<span class=\"#{html_options[:class]}\">" + form.check_box(field_id, html_options, item.id, false) + item.name + '</span>'
+            label_html_options = html_options
+
+            build + form.label(field_id, label_html_options) do
+              form.check_box(field_id, html_options, item.id, false) + item.name
+            end
           end.html_safe
         else
           error_message
